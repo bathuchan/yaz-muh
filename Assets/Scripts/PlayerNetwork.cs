@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PlayerNetwork : NetworkBehaviour
 {
-    
+
     private PlayerControls playerControls; // Instance of the generated class
     private float moveSpeed = 3f;
     private Vector3 moveDir;
@@ -13,13 +13,28 @@ public class PlayerNetwork : NetworkBehaviour
         // Create a new instance of PlayerControls for this client
         playerControls = new PlayerControls();
     }
+    private void Start()
+    {
+        playerControls.Player.Move.performed += OnPerformed;
+        playerControls.Player.Move.canceled += OnCancel; ;
+    }
+
+    private void OnCancel(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    {
+        moveDir=Vector3.zero;
+    }
+
+    private void OnPerformed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    {
+        Debug.Log(obj.ReadValue<Vector2>());
+
+    }
 
     private void OnEnable()
     {
-        if (IsOwner)
-        {
-            playerControls.Enable(); // Enable the input actions for the owner
-        }
+
+        playerControls.Enable(); // Enable the input actions for the owner
+
     }
 
     private void OnDisable()
