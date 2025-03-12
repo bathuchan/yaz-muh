@@ -11,11 +11,21 @@ public class PlayerNetwork : NetworkBehaviour
 
     private NetworkVariable<int> randomNumber = new NetworkVariable<int>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
+    private NetworkVariable<PlayerData> playerData = new NetworkVariable<PlayerData>(
+       new PlayerData(100, 50),
+       NetworkVariableReadPermission.Everyone,
+       NetworkVariableWritePermission.Server
+   );
+
     public override void OnNetworkSpawn()
     {
         randomNumber.OnValueChanged += (int previousValue, int newValue) =>
         {
             Debug.Log("Player id:"+OwnerClientId + " - randomNumber: " + randomNumber.Value);
+        };
+        playerData.OnValueChanged += (oldValue, newValue) =>
+        {
+            Debug.Log($"Player id:{OwnerClientId} Health: {newValue.playerHealth}, Shield: {newValue.playerShield}");
         };
     }
 
@@ -57,6 +67,12 @@ public class PlayerNetwork : NetworkBehaviour
         {
             randomNumber.Value = Random.Range(0, 100);
         }
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            TakeDamageServerRpc(5);
+        }
+
+        Vector3 movement = new Vector3(moveDir.x, 0, moveDir.y) * moveSpeed * Time.fixedDeltaTime;
     }
 
     private void FixedUpdate()
@@ -105,5 +121,12 @@ public class PlayerNetwork : NetworkBehaviour
         }
 
         rb.position = targetPos;
+    }
+    [ServerRpc]
+    public void TakeDamageServerRpc(int damage)
+    {
+        PlayerData data = playerData.Value;
+        data.playerHealth -= damage;
+        playerData.Value = data;
     }
 }
