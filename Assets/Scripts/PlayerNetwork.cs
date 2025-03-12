@@ -1,76 +1,109 @@
 using Unity.Netcode;
 using UnityEngine;
-
+using UnityEngine.InputSystem;
+[RequireComponent (typeof (Rigidbody))]
 public class PlayerNetwork : NetworkBehaviour
 {
-
-    private PlayerControls playerControls; // Instance of the generated class
+    private PlayerControls playerControls;
     private float moveSpeed = 3f;
     private Vector3 moveDir;
+    private Rigidbody rb;
+
+    private NetworkVariable<int> randomNumber = new NetworkVariable<int>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+
+    public override void OnNetworkSpawn()
+    {
+        randomNumber.OnValueChanged += (int previousValue, int newValue) =>
+        {
+            Debug.Log("Player id:"+OwnerClientId + " - randomNumber: " + randomNumber.Value);
+        };
+    }
 
     private void Awake()
     {
-        // Create a new instance of PlayerControls for this client
         playerControls = new PlayerControls();
+        rb = GetComponent<Rigidbody>();
     }
+
     private void Start()
     {
-        playerControls.Player.Move.performed += OnPerformed;
-        playerControls.Player.Move.canceled += OnCancel; ;
+        playerControls.Player.Move.performed += OnMove;
+        playerControls.Player.Move.canceled += OnMoveCancel;
     }
 
-    private void OnCancel(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    private void OnMove(InputAction.CallbackContext context)
     {
-        moveDir=Vector3.zero;
+        moveDir = context.ReadValue<Vector2>();
     }
 
-    private void OnPerformed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    private void OnMoveCancel(InputAction.CallbackContext context)
     {
-        Debug.Log(obj.ReadValue<Vector2>());
-
+        moveDir = Vector3.zero;
     }
 
     private void OnEnable()
     {
-
-        playerControls.Enable(); // Enable the input actions for the owner
-
+        playerControls.Enable();
     }
 
     private void OnDisable()
     {
-        if (IsOwner)
-        {
-            playerControls.Disable(); // Disable the input actions for the owner
-        }
+        playerControls.Disable();
     }
-
-    void Update()
+    private void Update()
     {
         if (!IsOwner) return;
-
-        // Read input using the generated class
-        moveDir = new Vector3(playerControls.Player.Move.ReadValue<Vector2>().x, 0, playerControls.Player.Move.ReadValue<Vector2>().y);
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            randomNumber.Value = Random.Range(0, 100);
+        }
     }
 
     private void FixedUpdate()
     {
         if (!IsOwner) return;
 
-        // Move the player
-        Vector3 newPosition = transform.position + moveDir * moveSpeed * Time.fixedDeltaTime;
-        transform.position = newPosition;
+        Vector3 movement = new Vector3(moveDir.x, 0, moveDir.y) * moveSpeed * Time.fixedDeltaTime;
 
-        // Optionally, you can call a method to update the position on the server
-        // UpdatePositionServerRpc(newPosition);
+        // Send movement to the server
+        SendInputToServerRpc(movement);
     }
 
-    // Uncomment this if you want to synchronize position with the server
-    /*
     [ServerRpc]
-    private void UpdatePositionServerRpc(Vector3 newPosition)
+    private void SendInputToServerRpc(Vector3 movement)
     {
-        transform.position = newPosition;
+        // Apply movement on the server using Rigidbody
+        Rigidbody serverRb = GetComponent<Rigidbody>();
+        serverRb.MovePosition(serverRb.position + movement);
+
+        // Send the updated position back to clients
+        UpdateClientPositionClientRpc(serverRb.position);
     }
-    */
+
+    [ClientRpc]
+    private void UpdateClientPositionClientRpc(Vector3 newPosition)
+    {
+        if (!IsOwner)
+        {
+            // Interpolate towards the server position for smooth movement
+            //StartCoroutine(InterpolateToPosition(newPosition));
+        }
+    }
+
+    private System.Collections.IEnumerator InterpolateToPosition(Vector3 targetPos)
+    {
+        float elapsedTime = 0f;
+        float lerpDuration = 0.1f; // Adjust for smoothness
+
+        Vector3 startPos = rb.position;
+
+        while (elapsedTime < lerpDuration)
+        {
+            rb.position = Vector3.Lerp(startPos, targetPos, elapsedTime / lerpDuration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        rb.position = targetPos;
+    }
 }
