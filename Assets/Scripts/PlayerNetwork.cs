@@ -88,12 +88,11 @@ public class PlayerNetwork : NetworkBehaviour
     [ServerRpc]
     private void SendInputToServerRpc(Vector3 movement)
     {
-        // Apply movement on the server using Rigidbody
-        Rigidbody serverRb = GetComponent<Rigidbody>();
-        serverRb.MovePosition(serverRb.position + movement);
+        // Apply movement on the server using the stored Rigidbody reference
+        rb.MovePosition(rb.position + movement);
 
-        // Send the updated position back to clients
-        UpdateClientPositionClientRpc(serverRb.position);
+        // Send updated position back to clients
+        UpdateClientPositionClientRpc(rb.position);
     }
 
     [ClientRpc]
