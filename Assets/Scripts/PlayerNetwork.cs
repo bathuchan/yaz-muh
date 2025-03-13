@@ -27,7 +27,10 @@ public class PlayerNetwork : NetworkBehaviour
         {
             Debug.Log($"Player id:{OwnerClientId} Health: {newValue.playerHealth}, Shield: {newValue.playerShield}");
         };
+        if (!IsOwner) return;
+        playerControls.Enable();
     }
+    
 
     private void Awake()
     {
@@ -51,13 +54,10 @@ public class PlayerNetwork : NetworkBehaviour
         moveDir = Vector3.zero;
     }
 
-    private void OnEnable()
-    {
-        playerControls.Enable();
-    }
-
+    
     private void OnDisable()
     {
+        
         playerControls.Disable();
     }
     private void Update()
