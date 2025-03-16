@@ -1,13 +1,15 @@
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
-[RequireComponent (typeof (Rigidbody))]
+
 public class PlayerNetwork : NetworkBehaviour
 {
-    private PlayerControls playerControls;
+    public PlayerControls playerControls { get; private set; }
+    
     private float moveSpeed = 3f;
-    private Vector3 moveDir;
+    public Vector3 moveDir { get; private set; }
     private Rigidbody rb;
+
 
     private NetworkVariable<int> randomNumber = new NetworkVariable<int>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
@@ -42,6 +44,7 @@ public class PlayerNetwork : NetworkBehaviour
     {
         playerControls.Player.Move.performed += OnMove;
         playerControls.Player.Move.canceled += OnMoveCancel;
+       
     }
 
     private void OnMove(InputAction.CallbackContext context)
@@ -54,7 +57,21 @@ public class PlayerNetwork : NetworkBehaviour
         moveDir = Vector3.zero;
     }
 
-    
+   
+
+    private void OnEnable()
+    {
+        //playerControls.Enable();
+       
+    }
+
+    //private void OnDisable()
+    //{
+    //    playerControls.Disable();
+    //    playerControls.Player.Look.performed -= OnLook;
+    //    playerControls.Player.Look.canceled -= OnLook;
+    //}
+
     private void OnDisable()
     {
         
@@ -73,6 +90,8 @@ public class PlayerNetwork : NetworkBehaviour
         }
 
         Vector3 movement = new Vector3(moveDir.x, 0, moveDir.y) * moveSpeed * Time.fixedDeltaTime;
+
+      
     }
 
     private void FixedUpdate()
@@ -128,4 +147,5 @@ public class PlayerNetwork : NetworkBehaviour
         data.playerHealth -= damage;
         playerData.Value = data;
     }
+    
 }
