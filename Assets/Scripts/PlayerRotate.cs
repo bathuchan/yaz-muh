@@ -9,7 +9,7 @@ public class PlayerRotate : NetworkBehaviour
     
     public float rotationSpeed = 5f;
 
-    [SerializeField] private Transform playerModel; // The model that should rotate (capsule)
+    [SerializeField] private Transform playerModel; // The model that should rotate
 
     private NetworkVariable<Quaternion> syncedRotation = new NetworkVariable<Quaternion>(
         Quaternion.identity,
@@ -17,21 +17,26 @@ public class PlayerRotate : NetworkBehaviour
         NetworkVariableWritePermission.Server
     );
 
-
     private void Awake()
     {
-        playerNetwork = GetComponentInParent<PlayerNetwork>();
         playerModel = transform;
-    }
 
-    private void OnEnable()
+    }
+    public override void OnNetworkSpawn()
     {
-        if (playerNetwork == null || playerNetwork.playerControls == null) return;
+        if(!IsOwner) return;
+        playerNetwork = GetComponentInParent<PlayerNetwork>();
+
+        if (playerNetwork == null || playerNetwork.playerControls == null) return;//rotation listeners set on joining server
 
         playerNetwork.playerControls.Player.Look.performed += OnLook;
         playerNetwork.playerControls.Player.Look.canceled += OnLookCancel;
-        
+
+
+
     }
+
+
 
     private void OnDisable()
     {
@@ -59,6 +64,7 @@ public class PlayerRotate : NetworkBehaviour
         if (IsOwner)
         {
             RotatePlayer();
+            //Debug.DrawRay(transform.position, transform.forward, Color.green);
         }
         else
         {

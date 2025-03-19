@@ -4,11 +4,10 @@ using UnityEngine.InputSystem;
 
 public class PlayerNetwork : NetworkBehaviour
 {
-    public PlayerControls playerControls { get; private set; }
+    public PlayerControls playerControls;
     
-    private float moveSpeed = 3f;
     public Vector3 moveDir { get; private set; }
-    private Rigidbody rb;
+    public Rigidbody playerRb;
 
 
     private NetworkVariable<int> randomNumber = new NetworkVariable<int>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
@@ -21,31 +20,33 @@ public class PlayerNetwork : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+
         randomNumber.OnValueChanged += (int previousValue, int newValue) =>
         {
-            Debug.Log("Player id:"+OwnerClientId + " - randomNumber: " + randomNumber.Value);
+            Debug.Log("Player id:" + OwnerClientId + " - randomNumber: " + randomNumber.Value);
         };
         playerData.OnValueChanged += (oldValue, newValue) =>
         {
-            Debug.Log($"Player id:{OwnerClientId} Health: {newValue.playerHealth}, Shield: {newValue.playerShield}");
+            Debug.Log($"Player id:{OwnerClientId} Health: {newValue.currentHealth}, Shield: {newValue.shield}");
         };
+
         if (!IsOwner) return;
+
+        playerControls.Player.Move.performed += OnMove;
+        playerControls.Player.Move.canceled += OnMoveCancel;
         playerControls.Enable();
+
+
     }
-    
+
 
     private void Awake()
     {
-        playerControls = new PlayerControls();
-        rb = GetComponent<Rigidbody>();
-    }
+        playerRb = GetComponent<Rigidbody>();
 
-    private void Start()
-    {
-        playerControls.Player.Move.performed += OnMove;
-        playerControls.Player.Move.canceled += OnMoveCancel;
-       
+        playerControls = new PlayerControls();
     }
+    
 
     private void OnMove(InputAction.CallbackContext context)
     {
@@ -57,24 +58,10 @@ public class PlayerNetwork : NetworkBehaviour
         moveDir = Vector3.zero;
     }
 
-   
-
-    private void OnEnable()
+    private void OnDisable()//remove listeners
     {
-        //playerControls.Enable();
-       
-    }
-
-    //private void OnDisable()
-    //{
-    //    playerControls.Disable();
-    //    playerControls.Player.Look.performed -= OnLook;
-    //    playerControls.Player.Look.canceled -= OnLook;
-    //}
-
-    private void OnDisable()
-    {
-        
+        playerControls.Player.Move.performed -= OnMove;
+        playerControls.Player.Move.canceled -= OnMoveCancel;
         playerControls.Disable();
     }
     private void Update()
@@ -89,18 +76,13 @@ public class PlayerNetwork : NetworkBehaviour
             TakeDamageServerRpc(5);
         }
 
-        Vector3 movement = new Vector3(moveDir.x, 0, moveDir.y) * moveSpeed * Time.fixedDeltaTime;
-
-      
     }
 
     private void FixedUpdate()
     {
         if (!IsOwner) return;
 
-        Vector3 movement = new Vector3(moveDir.x, 0, moveDir.y) * moveSpeed * Time.fixedDeltaTime;
-
-        // Send movement to the server
+        Vector3 movement = new Vector3(moveDir.x, 0, moveDir.y) * playerData.Value.movementSpeed * Time.fixedDeltaTime;
         SendInputToServerRpc(movement);
     }
 
@@ -108,13 +90,11 @@ public class PlayerNetwork : NetworkBehaviour
     private void SendInputToServerRpc(Vector3 movement)
     {
         // Apply movement on the server using the stored Rigidbody reference
-        rb.MovePosition(rb.position + movement);
+        playerRb.MovePosition(playerRb.position + movement);
 
-        // Send updated position back to clients
-        UpdateClientPositionClientRpc(rb.position);
     }
 
-    [ClientRpc]
+    [ClientRpc]//tried client prediction
     private void UpdateClientPositionClientRpc(Vector3 newPosition)
     {
         if (!IsOwner)
@@ -126,26 +106,27 @@ public class PlayerNetwork : NetworkBehaviour
 
     private System.Collections.IEnumerator InterpolateToPosition(Vector3 targetPos)
     {
+        //corotine approach is not the way(costy on lient side)
         float elapsedTime = 0f;
-        float lerpDuration = 0.1f; // Adjust for smoothness
+        float lerpDuration = 0.1f; 
 
-        Vector3 startPos = rb.position;
+        Vector3 startPos = playerRb.position;
 
         while (elapsedTime < lerpDuration)
         {
-            rb.position = Vector3.Lerp(startPos, targetPos, elapsedTime / lerpDuration);
+            playerRb.position = Vector3.Lerp(startPos, targetPos, elapsedTime / lerpDuration);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        rb.position = targetPos;
+        playerRb.position = targetPos;
     }
-    [ServerRpc]
+    [ServerRpc]//test function to register damage
     public void TakeDamageServerRpc(int damage)
     {
         PlayerData data = playerData.Value;
-        data.playerHealth -= damage;
+        data.currentHealth -= damage;
         playerData.Value = data;
     }
-    
+
 }
