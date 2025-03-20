@@ -268,6 +268,7 @@ GameObject:
   - component: {fileID: 8229289297725139061}
   - component: {fileID: 4579529216200032750}
   - component: {fileID: 4995055365582754784}
+  - component: {fileID: -719153631149836974}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -298,12 +299,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5731835462059271113}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1923222927
+  GlobalObjectIdHash: 1289426295
   InScenePlacedSourceGlobalObjectIdHash: 1289426295
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -324,6 +325,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f873bdca997e4b74d843e0cd58278af6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerState: {fileID: 0}
   playerRb: {fileID: 0}
 --- !u!114 &-4350314884548581451
 MonoBehaviour:
@@ -332,7 +334,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5731835462059271113}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
   m_Name: 
@@ -382,7 +384,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 116
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &4579529216200032750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -407,3 +409,45 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1424467ee8c4eed49b7f4661bc4c0559, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-719153631149836974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5731835462059271113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 847bb737de9e3d605935810dfb2ee400, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health:
+    m_InternalValue: 100
+  armor:
+    m_InternalValue: 100
+  damageMultipler:
+    m_InternalValue: 100
+  criticalChance:
+    m_InternalValue: 100
+  criticalMultiplier:
+    m_InternalValue: 100
+  shield:
+    m_InternalValue: 100
+  shieldMultiplier:
+    m_InternalValue: 100
+  cooldownSpeedMultiplier:
+    m_InternalValue: 100
+  movementSpeed:
+    m_InternalValue: 100
+  healingMultiplier:
+    m_InternalValue: 100
+  omnivampMultiplier:
+    m_InternalValue: 100
+  inputX:
+    m_InternalValue: 100
+  inputY:
+    m_InternalValue: 100
+  inputZ:
+    m_InternalValue: 100
+  permissions:
+    m_InternalValue: 255

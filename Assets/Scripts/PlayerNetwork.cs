@@ -1,13 +1,21 @@
+using System.Collections;
+using System.Diagnostics;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Debug = UnityEngine.Debug;
 
 public class PlayerNetwork : NetworkBehaviour
 {
     public PlayerControls playerControls;
+    public PlayerState playerState;
     
     public Vector3 moveDir { get; private set; }
     public Rigidbody playerRb;
+
+    private Stopwatch inputDeltaTime;
+    private Stopwatch tickDeltaTime;
+
 
 
     private NetworkVariable<int> randomNumber = new NetworkVariable<int>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
@@ -31,6 +39,10 @@ public class PlayerNetwork : NetworkBehaviour
         };
 
         if (!IsOwner) return;
+        playerState = GetComponent<PlayerState>();
+
+       
+
 
         playerControls.Player.Move.performed += OnMove;
         playerControls.Player.Move.canceled += OnMoveCancel;
@@ -43,19 +55,37 @@ public class PlayerNetwork : NetworkBehaviour
     private void Awake()
     {
         playerRb = GetComponent<Rigidbody>();
+        playerRb.isKinematic = false;
+        playerState = GetComponent<PlayerState>();
 
         playerControls = new PlayerControls();
+        if(inputDeltaTime == null){
+            inputDeltaTime = new Stopwatch();
+            inputDeltaTime.Start();
+        }
+
+        if(tickDeltaTime == null){
+            tickDeltaTime = new Stopwatch();
+            tickDeltaTime.Start();
+        }
+         
     }
     
 
     private void OnMove(InputAction.CallbackContext context)
     {
-        moveDir = context.ReadValue<Vector2>();
+        if(inputDeltaTime.ElapsedMilliseconds > playerState.TickPeriod){
+            Vector2 speed = context.ReadValue<Vector2>();
+            SendInputToServerRpc(ConvertFloatToByteSigned(speed.x), ConvertFloatToByteSigned(speed.y));
+            inputDeltaTime.Restart();
+        }
+        
+
     }
 
     private void OnMoveCancel(InputAction.CallbackContext context)
     {
-        moveDir = Vector3.zero;
+            SendInputToServerRpc(0, 0); // TODO: We don't need parameters. Create a new RPC that takes no parameter and does same thing.
     }
 
     private void OnDisable()//remove listeners
@@ -73,60 +103,66 @@ public class PlayerNetwork : NetworkBehaviour
         }
         if (Input.GetKeyDown(KeyCode.F))
         {
-            TakeDamageServerRpc(5);
+            //TakeDamageServerRpc(5);
         }
+
 
     }
 
     private void FixedUpdate()
     {
-        if (!IsOwner) return;
 
-        Vector3 movement = new Vector3(moveDir.x, 0, moveDir.y) * playerData.Value.movementSpeed * Time.fixedDeltaTime;
-        SendInputToServerRpc(movement);
     }
 
     [ServerRpc]
-    private void SendInputToServerRpc(Vector3 movement)
+    private void SendInputToServerRpc(byte x, byte z)
     {
         // Apply movement on the server using the stored Rigidbody reference
-        playerRb.MovePosition(playerRb.position + movement);
+
+        playerState.curInput = new Vector2(ConvertByteSignedToFloat(x), ConvertByteSignedToFloat(z));
 
     }
 
-    [ClientRpc]//tried client prediction
-    private void UpdateClientPositionClientRpc(Vector3 newPosition)
+
+    /*
+    Explanation: Converts a signed float value to signed byte, in range (-127,127).
+    It will use MSB as sign bit. If MSB is 0, then value is positive, otherwise negative.
+    Parameters: Value to be converted as float
+    Return: Clamped value as byte in range (-127,127)
+    */
+    public static byte ConvertFloatToByteSigned(float value)
     {
-        if (!IsOwner)
+        // Clamp value to -1 to 1
+        value = Mathf.Clamp(value, -1f, 1f);
+
+        // Convert to 7-bit magnitude (0 to 127)
+        byte magnitude = (byte)(Mathf.Abs(value) * 127);
+
+        // If negative, set the MSB (Most Significant Bit)
+        if (value < 0)
         {
-            // Interpolate towards the server position for smooth movement
-            //StartCoroutine(InterpolateToPosition(newPosition));
-        }
-    }
-
-    private System.Collections.IEnumerator InterpolateToPosition(Vector3 targetPos)
-    {
-        //corotine approach is not the way(costy on lient side)
-        float elapsedTime = 0f;
-        float lerpDuration = 0.1f; 
-
-        Vector3 startPos = playerRb.position;
-
-        while (elapsedTime < lerpDuration)
-        {
-            playerRb.position = Vector3.Lerp(startPos, targetPos, elapsedTime / lerpDuration);
-            elapsedTime += Time.deltaTime;
-            yield return null;
+            return (byte)(magnitude | 0x80);
         }
 
-        playerRb.position = targetPos;
+        return magnitude; // Otherwise, return positive magnitude
     }
-    [ServerRpc]//test function to register damage
-    public void TakeDamageServerRpc(int damage)
+
+
+
+    public static float ConvertByteSignedToFloat(byte value)
     {
-        PlayerData data = playerData.Value;
-        data.currentHealth -= damage;
-        playerData.Value = data;
+        // Extract sign bit
+        bool isNegative = (value & 0x80) != 0;
+
+        // Extract magnitude (clear MSB)
+        byte magnitude = (byte)(value & 0x7F);
+
+        // Convert back to float in range (-1 to 1)
+        float floatValue = magnitude / 127f;
+
+        return isNegative ? -floatValue : floatValue;
     }
+
+
 
 }

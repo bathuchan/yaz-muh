@@ -67,3 +67,5 @@ public struct PlayerData : INetworkSerializable, IEquatable<PlayerData>
                omnivampMultiplier == other.omnivampMultiplier;
     }
 }
+
+
