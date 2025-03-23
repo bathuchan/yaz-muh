@@ -8,44 +8,31 @@ using Debug = UnityEngine.Debug;
 public class PlayerNetwork : NetworkBehaviour
 {
     public PlayerControls playerControls;
+
     public PlayerState playerState;
-    
-    public Vector3 moveDir { get; private set; }
+
     public Rigidbody playerRb;
 
-    private Stopwatch inputDeltaTime;
-    private Stopwatch tickDeltaTime;
+    [HideInInspector] public Stopwatch inputDeltaTime { get; private set; }
+    [HideInInspector] public Stopwatch tickDeltaTime { get; private set; }
 
 
 
-    private NetworkVariable<int> randomNumber = new NetworkVariable<int>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    // private NetworkVariable<int> randomNumber = new NetworkVariable<int>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
-    private NetworkVariable<PlayerData> playerData = new NetworkVariable<PlayerData>(
-       new PlayerData(100, 50),
-       NetworkVariableReadPermission.Everyone,
-       NetworkVariableWritePermission.Server
-   );
+    // private NetworkVariable<PlayerData> playerData = new NetworkVariable<PlayerData>(
+    //    new PlayerData(100, 50),
+    //    NetworkVariableReadPermission.Everyone,
+    //    NetworkVariableWritePermission.Server
+    //);
+
+
 
     public override void OnNetworkSpawn()
     {
 
-        randomNumber.OnValueChanged += (int previousValue, int newValue) =>
-        {
-            Debug.Log("Player id:" + OwnerClientId + " - randomNumber: " + randomNumber.Value);
-        };
-        playerData.OnValueChanged += (oldValue, newValue) =>
-        {
-            Debug.Log($"Player id:{OwnerClientId} Health: {newValue.currentHealth}, Shield: {newValue.shield}");
-        };
-
         if (!IsOwner) return;
         playerState = GetComponent<PlayerState>();
-
-       
-
-
-        playerControls.Player.Move.performed += OnMove;
-        playerControls.Player.Move.canceled += OnMoveCancel;
         playerControls.Enable();
 
 
@@ -54,52 +41,40 @@ public class PlayerNetwork : NetworkBehaviour
 
     private void Awake()
     {
-        playerRb = GetComponent<Rigidbody>();
-        playerRb.isKinematic = false;
-        playerState = GetComponent<PlayerState>();
 
         playerControls = new PlayerControls();
-        if(inputDeltaTime == null){
+
+
+        playerRb = GetComponent<Rigidbody>();
+        playerRb.isKinematic = false;
+
+        playerState = GetComponent<PlayerState>();
+
+
+        if (inputDeltaTime == null)
+        {
             inputDeltaTime = new Stopwatch();
             inputDeltaTime.Start();
         }
 
-        if(tickDeltaTime == null){
+        if (tickDeltaTime == null)
+        {
             tickDeltaTime = new Stopwatch();
             tickDeltaTime.Start();
         }
-         
-    }
-    
-
-    private void OnMove(InputAction.CallbackContext context)
-    {
-        if(inputDeltaTime.ElapsedMilliseconds > playerState.TickPeriod){
-            Vector2 speed = context.ReadValue<Vector2>();
-            SendInputToServerRpc(ConvertFloatToByteSigned(speed.x), ConvertFloatToByteSigned(speed.y));
-            inputDeltaTime.Restart();
-        }
-        
 
     }
 
-    private void OnMoveCancel(InputAction.CallbackContext context)
-    {
-            SendInputToServerRpc(0, 0); // TODO: We don't need parameters. Create a new RPC that takes no parameter and does same thing.
-    }
 
-    private void OnDisable()//remove listeners
-    {
-        playerControls.Player.Move.performed -= OnMove;
-        playerControls.Player.Move.canceled -= OnMoveCancel;
-        playerControls.Disable();
-    }
+
+
+
     private void Update()
     {
         if (!IsOwner) return;
         if (Input.GetKeyDown(KeyCode.T))
         {
-            randomNumber.Value = Random.Range(0, 100);
+            //randomNumber.Value = Random.Range(0, 100);
         }
         if (Input.GetKeyDown(KeyCode.F))
         {
@@ -109,19 +84,27 @@ public class PlayerNetwork : NetworkBehaviour
 
     }
 
-    private void FixedUpdate()
+    private void OnDisable()
     {
+        playerControls.Disable();
+    }
+
+    [ServerRpc]
+    public void SendMoveInputToServerRpc(byte moveX, byte moveZ)
+    {
+        // Apply movement on the server using the stored Rigidbody reference
+
+        playerState.curMoveInput = new Vector2(ConvertByteSignedToFloat(moveX), ConvertByteSignedToFloat(moveZ));
+
 
     }
 
     [ServerRpc]
-    private void SendInputToServerRpc(byte x, byte z)
+    public void SendLookInputToServerRpc(byte lookX, byte lookY)
     {
-        // Apply movement on the server using the stored Rigidbody reference
-
-        playerState.curInput = new Vector2(ConvertByteSignedToFloat(x), ConvertByteSignedToFloat(z));
-
+        playerState.curLookInput = new Vector2(ConvertByteSignedToFloat(lookX), ConvertByteSignedToFloat(lookY));
     }
+
 
 
     /*

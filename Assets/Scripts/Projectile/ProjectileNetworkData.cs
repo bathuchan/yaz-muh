@@ -14,7 +14,7 @@ public class ProjectileNetworkData : INetworkSerializable
         spawnInfo = new SpawnInfo
         {
             position = Vector3.zero,
-            rotation = Quaternion.identity,
+            //rotation = Quaternion.identity,
             direction = Vector3.zero,
             playerVelocity = Vector3.zero
         };
@@ -25,7 +25,7 @@ public class ProjectileNetworkData : INetworkSerializable
     {
         this.projectileId = projectileId;
         spawnInfo.position = position;
-        spawnInfo.rotation = rotation;
+        //spawnInfo.rotation = rotation;
         spawnInfo.direction = direction;
         spawnInfo.playerVelocity = playerVelocity;
     }
@@ -35,7 +35,7 @@ public class ProjectileNetworkData : INetworkSerializable
     {
         serializer.SerializeValue(ref projectileId);
         serializer.SerializeValue(ref spawnInfo.position);
-        serializer.SerializeValue(ref spawnInfo.rotation);
+        //serializer.SerializeValue(ref spawnInfo.rotation);
         serializer.SerializeValue(ref spawnInfo.direction);
         serializer.SerializeValue(ref spawnInfo.playerVelocity);
     }
