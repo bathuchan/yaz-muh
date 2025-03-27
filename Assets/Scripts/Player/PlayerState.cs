@@ -16,6 +16,11 @@ public class PlayerState : NetworkBehaviour
 
     public float movementSpeed = 5.0f;
 
+   [HideInInspector] public Vector3 externalForce = Vector3.zero;
+    private float movementInfluence = 1.0f; // 1 = full control, 0 = no control
+    private float forceDecayRate = 2f; // How quickly the force wears off
+
+
     private Vector3 targetPosition; // Interpolation Target Position
     private float targetYRotation;  // Interpolation Target Rotation
 
@@ -68,10 +73,20 @@ public class PlayerState : NetworkBehaviour
     {
         if (IsServer)
         {
-            // Apply movement on server
-            Vector3 tempForce = new Vector3(curMoveInput.x * movementSpeed, 0, curMoveInput.y * movementSpeed);
-            playerNetwork.playerRb.velocity = tempForce;
+            // Reduce input strength when affected by force
+            float influenceFactor = Mathf.Clamp01(1 - externalForce.magnitude / 10f); // Adjust divisor for balance
+            movementInfluence = Mathf.Lerp(movementInfluence, influenceFactor, Time.fixedDeltaTime * 5f);
+
+            // Apply reduced movement input
+            Vector3 inputVelocity = new Vector3(curMoveInput.x * movementSpeed, 0, curMoveInput.y * movementSpeed) * movementInfluence;
+
+            // Apply external force
+            playerNetwork.playerRb.velocity = inputVelocity + externalForce;
+
+            // Gradually decay the force
+            externalForce = Vector3.Lerp(externalForce, Vector3.zero, Time.fixedDeltaTime * forceDecayRate);
         }
+
 
         if (IsClient && playerLook != null && playerLook.playerModel != null)
         {
@@ -116,7 +131,7 @@ public class PlayerState : NetworkBehaviour
                     UpdatePositionClientRpc(new Vector2(targetPosition.x, targetPosition.z));
                 }
 
-                // 🔹 Update Rotation (Server Sets Rotation)
+                // Update Rotation (Server Sets Rotation)
                 if (curLookInput != Vector2.zero)
                 {
                     float targetAngle = Mathf.Atan2(curLookInput.x, curLookInput.y) * Mathf.Rad2Deg;
@@ -130,6 +145,24 @@ public class PlayerState : NetworkBehaviour
             }
         }
     }
+
+    public void ApplyForce(Vector3 force)
+    {
+        if (IsServer) // Only server applies forces
+        {
+            externalForce += force;
+            SyncExternalForceClientRpc(externalForce);
+        }
+    }
+
+    
+
+    [ClientRpc]
+    private void SyncExternalForceClientRpc(Vector3 force)
+    {
+        externalForce = force;
+    }
+
 
     [ClientRpc]
     void UpdatePositionClientRpc(Vector2 newPosition)

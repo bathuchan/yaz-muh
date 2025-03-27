@@ -21,17 +21,17 @@ public enum ElementType { Fire, Water, Nature }
 public struct SpawnInfo: INetworkSerializable
 {
     public int projectileId;
-    public Vector3 position;
+    
     public Vector3 direction;
-    public Vector3 playerVelocity;
+
 
     
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
         serializer.SerializeValue(ref projectileId);
-        serializer.SerializeValue(ref position);
+        
         serializer.SerializeValue(ref direction); 
-        serializer.SerializeValue(ref playerVelocity);
+        
     }
 }

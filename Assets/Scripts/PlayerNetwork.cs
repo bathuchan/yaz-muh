@@ -63,7 +63,7 @@ public class PlayerNetwork : NetworkBehaviour
         if (!IsOwner) return;
         if (Input.GetKeyDown(KeyCode.T))
         {
-            //randomNumber.Value = Random.Range(0, 100);
+            //playerRb.AddForce(transform.forward*100f, ForceMode.Force);
         }
         if (Input.GetKeyDown(KeyCode.F))
         {

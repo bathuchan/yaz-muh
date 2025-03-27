@@ -1,5 +1,6 @@
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.LowLevel;
 
 public class PlayerAbility : NetworkBehaviour
 {
@@ -7,7 +8,14 @@ public class PlayerAbility : NetworkBehaviour
     [SerializeField] private Transform firePoint;
 
     private PlayerNetwork playerNetwork;
+    private PlayerState playerState;
     Collider shooterCollider;
+    private PlayerLook playerLook;
+    private void Awake()
+    {
+        playerState = GetComponent<PlayerState>();
+        playerLook= GetComponent<PlayerLook>();
+    }
     private void Start()
     {
         playerNetwork = GetComponent<PlayerNetwork>();
@@ -44,14 +52,15 @@ public class PlayerAbility : NetworkBehaviour
                 Debug.LogError("Invalid projectile ID! Make sure it exists in the database.");
                 return;
             }
-
-            SpawnInfo spawnInfo = new SpawnInfo
+            
+           SpawnInfo spawnInfo = new SpawnInfo
             {
                 projectileId = this.projectileId,
-                position = firePoint.position,
-                direction = firePoint.forward,
-                playerVelocity = playerNetwork.playerRb.velocity
+                
+                direction = playerLook.playerModel.transform.forward
+                
             };
+
 
             Debug.Log("[CLIENT] Requesting Server to spawn projectile on all clients...");
             RequestProjectileSpawnServerRpc(spawnInfo);
@@ -62,6 +71,7 @@ public class PlayerAbility : NetworkBehaviour
     [ServerRpc]
     private void RequestProjectileSpawnServerRpc(SpawnInfo spawnInfo)
     {
+        
         Debug.Log($"[SERVER] Received request to spawn projectile {spawnInfo.projectileId}");
 
         //TODO:somehow need to create a projectile instance on serverside as well and check if client side projectile and this serverside projectile matchs.
@@ -86,7 +96,7 @@ public class PlayerAbility : NetworkBehaviour
 
         GameObject projectileInstance = Instantiate(
             projectileData.prefab,
-            spawnInfo.position,
+            firePoint.position,
             Quaternion.identity
         );
 
@@ -96,7 +106,7 @@ public class PlayerAbility : NetworkBehaviour
         if (projectile != null)
         {
             
-            projectile.Initialize(spawnInfo, shooterCollider);
+            projectile.Initialize(spawnInfo, firePoint.position, shooterCollider,playerNetwork,playerState);
         }
         else
         {

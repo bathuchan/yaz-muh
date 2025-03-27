@@ -5,12 +5,22 @@ public class Projectile : NetworkBehaviour
 {
     private Rigidbody rb;
     private SpawnInfo spawnInfo;
-    private ProjectileData projectileData;
+    [SerializeField]private ProjectileData projectileData;
+    PlayerNetwork playerNetwork;
+    PlayerState playerState;
+    Vector3 spawnPoint;
 
-    public void Initialize(SpawnInfo spawnInfo, Collider shooterCollider)
+   
+
+
+
+    public void Initialize(SpawnInfo spawnInfo,Vector3 spawnPoint, Collider shooterCollider,PlayerNetwork playerNetwork,PlayerState playerState)
     {
         this.spawnInfo = spawnInfo;
+        this.spawnPoint = spawnPoint;
         this.projectileData = ProjectileDatabase.Instance.GetProjectileData(spawnInfo.projectileId);
+        this.playerNetwork = playerNetwork;
+        this.playerState = playerState;
 
         if (this.projectileData == null)
         {
@@ -38,12 +48,12 @@ public class Projectile : NetworkBehaviour
     private void Start()
     {
         rb.isKinematic = false;
-        rb.velocity = (spawnInfo.direction.normalized * projectileData.speed) + spawnInfo.playerVelocity;
+        rb.velocity = (spawnInfo.direction.normalized * projectileData.speed) + playerNetwork.playerRb.velocity-playerState.externalForce;
     }
 
     private void Update()
     {
-        if (Vector3.Distance(spawnInfo.position, transform.position) >= projectileData.range)
+        if (Vector3.Distance(spawnPoint, transform.position) >= projectileData.range)
         {
             Destroy(gameObject);
         }
@@ -51,6 +61,7 @@ public class Projectile : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+
         if (other.CompareTag("Player"))
         {
             Debug.Log($"[PROJECTILE] Hit player: {other.name}");
