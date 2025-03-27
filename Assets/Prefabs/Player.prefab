@@ -234,7 +234,7 @@ GameObject:
   - component: {fileID: 9147449844068441226}
   - component: {fileID: 1682117591148849142}
   - component: {fileID: 8229289297725139061}
-  - component: {fileID: 8066385314046177640}
+  - component: {fileID: -9199296491521205596}
   - component: {fileID: -7271779479490451591}
   - component: {fileID: -719153631149836974}
   - component: {fileID: -2177730206592870550}
@@ -298,7 +298,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 1
---- !u!114 &8066385314046177640
+--- !u!114 &-9199296491521205596
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -310,8 +310,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1923222927
-  InScenePlacedSourceGlobalObjectIdHash: 1289426295
+  GlobalObjectIdHash: 47121172
+  InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -346,16 +346,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   oldMoveInput: {x: 0, y: 0}
+  oldLookInput: {x: 0, y: 0}
   curMoveInput: {x: 0, y: 0}
-  movementSpeed: 5
-  oldPosition: {x: 0, y: 0, z: 0}
-  oldRotation: {x: 0, y: 0, z: 0, w: 1}
   curLookInput: {x: 0, y: 0}
-  rotationSpeed: 10
-  TickPeriod: 20
-  playerNetwork: {fileID: 0}
+  movementSpeed: 5
+  NetworkYRotation:
+    m_InternalValue: 0
   permissions:
     m_InternalValue: 255
+  playerNetwork: {fileID: 0}
+  TickPeriod: 20
+  interpolationSpeed: 10
 --- !u!114 &-2177730206592870550
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -368,6 +369,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d18688264f4d6c4587aa325c861a2d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speed: {x: 0, y: 0}
 --- !u!114 &9161588999262510177
 MonoBehaviour:
   m_ObjectHideFlags: 0

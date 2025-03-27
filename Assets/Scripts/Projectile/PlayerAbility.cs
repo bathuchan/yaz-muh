@@ -7,10 +7,11 @@ public class PlayerAbility : NetworkBehaviour
     [SerializeField] private Transform firePoint;
 
     private PlayerNetwork playerNetwork;
-
+    Collider shooterCollider;
     private void Start()
     {
         playerNetwork = GetComponent<PlayerNetwork>();
+        shooterCollider = GetComponentInChildren<Collider>();
     }
 
     private void Update()
@@ -89,22 +90,12 @@ public class PlayerAbility : NetworkBehaviour
             Quaternion.identity
         );
 
-        //NetworkObject networkObject = projectileInstance.GetComponent<NetworkObject>();
-        //if (networkObject != null)
-        //{
-        //    networkObject.Spawn();
-        //}
-        //else
-        //{
-        //    Debug.LogError("[SERVER] Projectile prefab is missing a NetworkObject component!");
-        //    return;
-        //}
-
         // Initialize projectile with shooter collider
+
         Projectile projectile = projectileInstance.GetComponent<Projectile>();
         if (projectile != null)
         {
-            Collider shooterCollider = GetComponentInChildren<Collider>();
+            
             projectile.Initialize(spawnInfo, shooterCollider);
         }
         else

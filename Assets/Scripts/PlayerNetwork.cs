@@ -17,17 +17,6 @@ public class PlayerNetwork : NetworkBehaviour
     [HideInInspector] public Stopwatch tickDeltaTime { get; private set; }
 
 
-
-    // private NetworkVariable<int> randomNumber = new NetworkVariable<int>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-
-    // private NetworkVariable<PlayerData> playerData = new NetworkVariable<PlayerData>(
-    //    new PlayerData(100, 50),
-    //    NetworkVariableReadPermission.Everyone,
-    //    NetworkVariableWritePermission.Server
-    //);
-
-
-
     public override void OnNetworkSpawn()
     {
 
