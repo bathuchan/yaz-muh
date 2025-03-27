@@ -37,7 +37,7 @@ public class PlayerLook : NetworkBehaviour
         if (playerNetwork == null || playerNetwork.playerControls == null) return;//rotation listeners set on joining server
 
         playerNetwork.playerControls.Player.Look.performed += OnLook;
-        playerNetwork.playerControls.Player.Look.canceled += OnLook;
+        playerNetwork.playerControls.Player.Look.canceled += OnLookCancel;
 
     }
 
@@ -56,13 +56,17 @@ public class PlayerLook : NetworkBehaviour
 
     private void OnLook(InputAction.CallbackContext context)
     {
-        lookInput = context.ReadValue<Vector2>();
+        
+            lookInput = context.ReadValue<Vector2>();
 
-        // Convert to byte for efficient network transfer
-        byte lookX = PlayerNetwork.ConvertFloatToByteSigned(lookInput.x);
-        byte lookY = PlayerNetwork.ConvertFloatToByteSigned(lookInput.y);
+        
+    }
+    private void OnLookCancel(InputAction.CallbackContext context)
+    {
 
-        playerNetwork.SendLookInputToServerRpc(lookX, lookY);
+        lookInput = Vector2.zero;
+
+
     }
 
 
@@ -72,7 +76,7 @@ public class PlayerLook : NetworkBehaviour
         if (playerNetwork == null || playerNetwork.playerControls == null) return;
 
         playerNetwork.playerControls.Player.Look.performed -= OnLook;
-        playerNetwork.playerControls.Player.Look.canceled -= OnLook;
+        playerNetwork.playerControls.Player.Look.canceled -= OnLookCancel;
 
     }
 }

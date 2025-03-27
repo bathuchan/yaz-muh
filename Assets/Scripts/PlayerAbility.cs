@@ -62,6 +62,35 @@ public class PlayerAbility : NetworkBehaviour
     private void RequestProjectileSpawnServerRpc(SpawnInfo spawnInfo)
     {
         Debug.Log($"[SERVER] Received request to spawn projectile {spawnInfo.projectileId}");
+
+        //TODO:somehow need to create a projectile instance on serverside as well and check if client side projectile and this serverside projectile matchs.
+        //Or only trust the serverside projectile to register collisions
+        
+
+        //ProjectileData projectileData = ProjectileDatabase.Instance.GetProjectileData(spawnInfo.projectileId);
+        //if (projectileData == null)
+        //{
+        //    Debug.LogError("[CLIENT] Invalid projectile ID!");
+        //    return;
+        //}
+
+        //GameObject projectileInstance = Instantiate(
+        //    projectileData.prefab,
+        //    spawnInfo.position,
+        //    Quaternion.identity
+        //);
+
+        //Debug.Log("[CLIENT] Instantiated projectile successfully!");
+
+        //Projectile projectile = projectileInstance.GetComponent<Projectile>();
+        //if (projectile == null)
+        //{
+        //    Debug.LogError("[CLIENT] Spawned object does not have a Projectile component!");
+        //    return;
+        //}
+
+        //projectile.Initialize(spawnInfo);
+
         SpawnProjectileClientRpc(spawnInfo);
     }
 

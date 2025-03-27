@@ -1,6 +1,7 @@
+using Unity.Netcode;
 using UnityEngine;
 
-public class Projectile : MonoBehaviour
+public class Projectile : NetworkBehaviour
 {
     private Rigidbody rb;
     private SpawnInfo spawnInfo;
@@ -40,6 +41,10 @@ public class Projectile : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        //TODO:Need a way of this collission detection only get controlled on server side to prevent cheating from client side
+        //Or implement a way to fullt trust client's side collission detection
+        //if(!IsServer) return;
+
         if (other.CompareTag("Player"))
         {
             Debug.Log($"[PROJECTILE] Hit player: {other.name}");

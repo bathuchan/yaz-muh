@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : NetworkBehaviour
 {
     PlayerNetwork playerNetwork;
+    public Vector2 speed;
 
     private void Awake()
     {
@@ -17,37 +18,35 @@ public class PlayerMovement : NetworkBehaviour
     {
         if (!IsOwner) return;
 
-        if (playerNetwork != null && playerNetwork.playerControls != null) 
+        if (playerNetwork != null && playerNetwork.playerControls != null)
         {
             playerNetwork.playerControls.Player.Move.performed += OnMove;
             playerNetwork.playerControls.Player.Move.canceled += OnMoveCancel;
-            
+
         }
-           
+
     }
 
 
     private void OnMove(InputAction.CallbackContext context)
     {
-        if (playerNetwork.inputDeltaTime.ElapsedMilliseconds > playerNetwork.playerState.TickPeriod)
-        {
-            Vector2 speed = context.ReadValue<Vector2>();
-            playerNetwork.SendMoveInputToServerRpc(PlayerNetwork.ConvertFloatToByteSigned(speed.x), PlayerNetwork.ConvertFloatToByteSigned(speed.y));
-            playerNetwork.inputDeltaTime.Restart();
-        }
+
+        speed = context.ReadValue<Vector2>();
+
 
 
     }
 
     private void OnMoveCancel(InputAction.CallbackContext context)
     {
-        playerNetwork.SendMoveInputToServerRpc(0, 0); // TODO: We don't need parameters. Create a new RPC that takes no parameter and does same thing.
+        speed = Vector2 .zero;
+
     }
 
     private void OnDisable()//Remove listeners
     {
         playerNetwork.playerControls.Player.Move.performed -= OnMove;
         playerNetwork.playerControls.Player.Move.canceled -= OnMoveCancel;
-        
+
     }
 }
