@@ -7,10 +7,10 @@ public class Projectile : NetworkBehaviour
     private SpawnInfo spawnInfo;
     private ProjectileData projectileData;
 
-    public void Initialize(SpawnInfo spawnInfo)
+    public void Initialize(SpawnInfo spawnInfo, Collider shooterCollider)
     {
         this.spawnInfo = spawnInfo;
-        this.projectileData = ProjectileDatabase.Instance.GetProjectileData(spawnInfo.projectileId);//FOR PREVENTING CHEATS
+        this.projectileData = ProjectileDatabase.Instance.GetProjectileData(spawnInfo.projectileId);
 
         if (this.projectileData == null)
         {
@@ -25,14 +25,24 @@ public class Projectile : NetworkBehaviour
             return;
         }
 
-        // Apply initial velocity
+        // Ignore collision with the shooter
+        Collider projectileCollider = GetComponent<Collider>();
+        if (projectileCollider != null && shooterCollider != null)
+        {
+            Physics.IgnoreCollision(projectileCollider, shooterCollider);
+        }
+
+        gameObject.SetActive(true);
+    }
+
+    private void Start()
+    {
         rb.isKinematic = false;
         rb.velocity = (spawnInfo.direction.normalized * projectileData.speed) + spawnInfo.playerVelocity;
     }
 
     private void Update()
     {
-        // Destroy if out of range
         if (Vector3.Distance(spawnInfo.position, transform.position) >= projectileData.range)
         {
             Destroy(gameObject);
@@ -41,10 +51,6 @@ public class Projectile : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        //TODO:Need a way of this collission detection only get controlled on server side to prevent cheating from client side
-        //Or implement a way to fullt trust client's side collission detection
-        //if(!IsServer) return;
-
         if (other.CompareTag("Player"))
         {
             Debug.Log($"[PROJECTILE] Hit player: {other.name}");

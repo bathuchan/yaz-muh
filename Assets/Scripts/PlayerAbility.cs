@@ -67,30 +67,6 @@ public class PlayerAbility : NetworkBehaviour
         //Or only trust the serverside projectile to register collisions
         
 
-        //ProjectileData projectileData = ProjectileDatabase.Instance.GetProjectileData(spawnInfo.projectileId);
-        //if (projectileData == null)
-        //{
-        //    Debug.LogError("[CLIENT] Invalid projectile ID!");
-        //    return;
-        //}
-
-        //GameObject projectileInstance = Instantiate(
-        //    projectileData.prefab,
-        //    spawnInfo.position,
-        //    Quaternion.identity
-        //);
-
-        //Debug.Log("[CLIENT] Instantiated projectile successfully!");
-
-        //Projectile projectile = projectileInstance.GetComponent<Projectile>();
-        //if (projectile == null)
-        //{
-        //    Debug.LogError("[CLIENT] Spawned object does not have a Projectile component!");
-        //    return;
-        //}
-
-        //projectile.Initialize(spawnInfo);
-
         SpawnProjectileClientRpc(spawnInfo);
     }
 
@@ -103,7 +79,7 @@ public class PlayerAbility : NetworkBehaviour
         ProjectileData projectileData = ProjectileDatabase.Instance.GetProjectileData(spawnInfo.projectileId);
         if (projectileData == null)
         {
-            Debug.LogError("[CLIENT] Invalid projectile ID!");
+            Debug.LogError("[SERVER] Invalid projectile ID!");
             return;
         }
 
@@ -113,16 +89,28 @@ public class PlayerAbility : NetworkBehaviour
             Quaternion.identity
         );
 
-        Debug.Log("[CLIENT] Instantiated projectile successfully!");
+        //NetworkObject networkObject = projectileInstance.GetComponent<NetworkObject>();
+        //if (networkObject != null)
+        //{
+        //    networkObject.Spawn();
+        //}
+        //else
+        //{
+        //    Debug.LogError("[SERVER] Projectile prefab is missing a NetworkObject component!");
+        //    return;
+        //}
 
+        // Initialize projectile with shooter collider
         Projectile projectile = projectileInstance.GetComponent<Projectile>();
-        if (projectile == null)
+        if (projectile != null)
         {
-            Debug.LogError("[CLIENT] Spawned object does not have a Projectile component!");
-            return;
+            Collider shooterCollider = GetComponentInChildren<Collider>();
+            projectile.Initialize(spawnInfo, shooterCollider);
         }
-
-        projectile.Initialize(spawnInfo);
+        else
+        {
+            Debug.LogError("[SERVER] Spawned projectile is missing the Projectile component!");
+        }
     }
 
 }
