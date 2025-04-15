@@ -20,5 +20,6 @@ MonoBehaviour:
   speed: 15
   cooldown: 1
   duration: 10
-  range: 10
+  range: 15
   description: asdsad
+  trajectoryStyle: {fileID: 11400000, guid: f18faaecccfde264eb3e1cd620d36248, type: 2}
