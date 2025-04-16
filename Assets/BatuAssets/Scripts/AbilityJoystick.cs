@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.OnScreen;
 
-public class AbilityJoystick : NetworkBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
+public class AbilityJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
     public RectTransform joystickBase; // Background that stays fixed
     public RectTransform joystickKnob; // Moving part of the joystick
@@ -30,7 +30,6 @@ public class AbilityJoystick : NetworkBehaviour, IPointerDownHandler, IDragHandl
     }
     private void Update()
     {
-        if (!IsOwner) return;
         // Continuously update wasAiming
         
         Debug.Log("wasAiming:" + wasAiming);
@@ -38,16 +37,17 @@ public class AbilityJoystick : NetworkBehaviour, IPointerDownHandler, IDragHandl
     }
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (playerAbility == null || !IsOwner) return;
+        if (playerAbility == null) return;
         isDragging = true;
         wasAiming = false; // Reset here
 
         playerAbility.projectileId = projectileId;
+
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (playerAbility == null || ! IsOwner) return;
+        if (playerAbility == null) return;
 
         
         if (!isDragging) return;
@@ -82,7 +82,7 @@ public class AbilityJoystick : NetworkBehaviour, IPointerDownHandler, IDragHandl
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        if (playerAbility == null || !IsOwner) return;
+        if (playerAbility == null) return;
 
         isDragging = false;
         //joystickKnob.anchoredPosition = Vector2.zero;

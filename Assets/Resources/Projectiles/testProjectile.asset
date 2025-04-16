@@ -22,4 +22,4 @@ MonoBehaviour:
   duration: 10
   range: 8
   description: asdsad
-  trajectoryStyle: {fileID: 11400000, guid: f18faaecccfde264eb3e1cd620d36248, type: 2}
+  trajectoryStyle: {fileID: 11400000, guid: ca490fb09921ac84b84c06cdfffdcc36, type: 2}

@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: testProjectile 2
   m_EditorClassIdentifier: 
   projectileId: 3
-  prefab: {fileID: 1604549114725349650, guid: 2c562be0591b2d3408e3f1c1e524a3ba, type: 3}
+  prefab: {fileID: 1604549114725349650, guid: d95dec379e53d9a4086e67d4839c23bd, type: 3}
   baseDamage: 50
   elementType: 1
   baseCriticalChange: 0.05
-  speed: 1
+  speed: 0
   cooldown: 5
   duration: 10
   range: 10

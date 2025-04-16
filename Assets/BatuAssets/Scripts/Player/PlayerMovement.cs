@@ -33,13 +33,17 @@ public class PlayerMovement : NetworkBehaviour
 
         speed = context.ReadValue<Vector2>();
 
+        if(speed!=Vector2.zero || !playerNetwork.playerAnimationsController.GetBool("IsWalking")) 
+        {
+            playerNetwork.playerAnimationsController.UpdateBool("IsWalking", true);
 
-
+        }
     }
 
-    private void OnMoveCancel(InputAction.CallbackContext context)
+    private void OnMoveCancel(InputAction.CallbackContext context)  
     {
         speed = Vector2 .zero;
+        playerNetwork.playerAnimationsController.UpdateBool("IsWalking", false);
 
     }
 

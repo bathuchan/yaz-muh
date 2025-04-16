@@ -72,24 +72,7 @@ public class PlayerAbility : NetworkBehaviour
             Debug.LogError("FirePoint is not assigned!");
             return;
         }
-        //ProjectileData projectileData=new ProjectileData();
-
-        //if (currentProjectileData==null) 
-        //{
-        //    projectileData = ProjectileDatabase.Instance.GetProjectileData(projectileId);
-        //}
-        //else 
-        //{
-        //    projectileData=currentProjectileData;
-        //}
-
-        
-
-        //if (projectileData == null)
-        //{
-        //    Debug.LogError("Invalid projectile ID! Make sure it exists in the database.");
-        //    return;
-        //}
+    
 
         SpawnInfo spawnInfo = new SpawnInfo
         {
@@ -102,6 +85,8 @@ public class PlayerAbility : NetworkBehaviour
 
         Debug.Log("[CLIENT] Requesting Server to spawn projectile on all clients...");
         RequestProjectileSpawnServerRpc(spawnInfo);
+
+        playerNetwork.playerAnimationsController.TriggerAttackAnimation();
     }
 
     [ServerRpc]

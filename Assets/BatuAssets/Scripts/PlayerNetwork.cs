@@ -11,6 +11,8 @@ public class PlayerNetwork : NetworkBehaviour
 
     public PlayerState playerState;
 
+    public PlayerAnimationsController playerAnimationsController;
+
     public Rigidbody playerRb;
 
     [HideInInspector] public Stopwatch inputDeltaTime { get; private set; }
@@ -38,6 +40,8 @@ public class PlayerNetwork : NetworkBehaviour
         playerRb.isKinematic = false;
 
         playerState = GetComponent<PlayerState>();
+
+        playerAnimationsController = GetComponentInChildren<PlayerAnimationsController>();
 
 
         if (inputDeltaTime == null)
