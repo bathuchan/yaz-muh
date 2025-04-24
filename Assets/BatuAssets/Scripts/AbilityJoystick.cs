@@ -19,20 +19,14 @@ public class AbilityJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler,
 
     private void Start()
     {
-        if (projectileId == 0)
-        {
-           // gameObject.SetActive(false); // Disable joystick if no valid ability
-        }
-        else
-        {
-            projectileData = ProjectileDatabase.Instance.GetProjectileData(projectileId);
-        }
+        projectileData = ProjectileDatabase.Instance.GetProjectileData(projectileId);
+
     }
     private void Update()
     {
         // Continuously update wasAiming
-        
-        Debug.Log("wasAiming:" + wasAiming);
+
+        //Debug.Log("wasAiming:" + wasAiming);
 
     }
     public void OnPointerDown(PointerEventData eventData)
@@ -49,9 +43,9 @@ public class AbilityJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler,
     {
         if (playerAbility == null) return;
 
-        
+
         if (!isDragging) return;
-        
+
 
         if (RectTransformUtility.ScreenPointToLocalPointInRectangle(joystickBase, eventData.position, eventData.pressEventCamera, out Vector2 localPoint))
         {
@@ -62,14 +56,14 @@ public class AbilityJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler,
             wasAiming = distance > joystickRange * 0.25f;
 
             // Set input for OnScreenStick
-            if (wasAiming) 
+            if (wasAiming)
             {
                 onScreenStick.OnDrag(eventData);
                 playerAbility.playerLook.trajectoryManager.StartTrajectory();
 
 
             }
-            else 
+            else
             {
                 playerAbility.playerLook.trajectoryManager.StopTrajectory();
             }
@@ -77,7 +71,7 @@ public class AbilityJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler,
             playerAbility.projectileId = projectileId;
             playerAbility.currentProjectileData = projectileData;
         }
-        
+
     }
 
     public void OnPointerUp(PointerEventData eventData)
@@ -94,6 +88,6 @@ public class AbilityJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler,
             playerAbility.CastAbility();
         }
 
-        wasAiming = false; 
+        wasAiming = false;
     }
 }

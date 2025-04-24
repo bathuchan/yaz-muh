@@ -8,6 +8,7 @@ public class TrajectoryManager : NetworkBehaviour
 {
     private LineRenderer lineRenderer;
     public Transform trajectoryStartPosition;
+    public Transform currentAimPosition;
     public PlayerLook playerLook;
     public PlayerAbility playerAbility;
 
@@ -59,12 +60,32 @@ public class TrajectoryManager : NetworkBehaviour
 
     public void ShowTrajectory(Vector3 startPos, Vector3 direction, ProjectileData projectileData)
     {
-        if (!IsOwner) return;  // Ensure only the owning player draws the trajectory
+        if (!IsOwner) return;
 
         if (projectileData == null || projectileData.trajectoryStyle == null) return;
 
-        Vector3[] fullPath = projectileData.trajectoryStyle.CalculateTrajectory(startPos, direction, projectileData.speed, projectileData.range);
+        // Determine the actual starting point
+        Vector3[] fullPath;
 
+        if (projectileData.trajectoryStyle is CircularTrajectory)
+        {
+            fullPath = projectileData.trajectoryStyle.CalculateTrajectory(currentAimPosition.position, direction, projectileData.speed, projectileData.range);
+        }
+        else
+        {
+            fullPath = projectileData.trajectoryStyle.CalculateTrajectory(startPos, direction, projectileData.speed, projectileData.range);
+        }
+
+        // No raycast check for circular paths, just draw the full shape
+        if (projectileData.trajectoryStyle is CircularTrajectory)
+        {
+            lineRenderer.positionCount = fullPath.Length;
+            lineRenderer.loop = true; // Make sure it's circular
+            lineRenderer.SetPositions(fullPath);
+            return;
+        }
+
+        // Normal trajectory with raycast collision checks
         List<Vector3> visiblePath = new List<Vector3> { fullPath[0] };
 
         for (int i = 1; i < fullPath.Length; i++)
@@ -85,10 +106,10 @@ public class TrajectoryManager : NetworkBehaviour
             }
         }
 
+        lineRenderer.loop = false;
         lineRenderer.positionCount = visiblePath.Count;
         lineRenderer.SetPositions(visiblePath.ToArray());
     }
-
     public void ClearTrajectory()
     {
         if (!IsOwner) return;  // Ensure only the owning player clears the trajectory

@@ -19,6 +19,7 @@ public class PlayerLook : NetworkBehaviour
 
     public Transform playerModel; // The model that should rotate
 
+    
     public Transform aimPoint;
 
     public PlayerAbility playerAbility;
@@ -70,7 +71,7 @@ public class PlayerLook : NetworkBehaviour
             if (lookInput.magnitude > 0.01f)
             {
                 Vector3 aimDirection = playerModel.forward;
-                Vector3 targetPosition = playerModel.position + aimDirection * range * lookInput.magnitude;
+                Vector3 targetPosition = playerModel.position + aimDirection * range * lookInput.magnitude + Vector3.down * 0.95f;
 
                 aimPoint.position = Vector3.SmoothDamp(
                     aimPoint.position,
@@ -82,7 +83,7 @@ public class PlayerLook : NetworkBehaviour
             else
             {
                 // Snap to zero if no input
-                aimPoint.position = playerModel.position ;
+                aimPoint.position = playerModel.position +Vector3.down*0.95f;
             }
 
         }

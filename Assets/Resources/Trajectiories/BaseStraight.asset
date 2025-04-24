@@ -12,3 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 565605b646ec1f6459877ad3e5b82cd5, type: 3}
   m_Name: BaseStraight
   m_EditorClassIdentifier: 
+  previewStartPosition: {x: 0, y: 0, z: 0}
+  previewDirection: {x: 1, y: 0, z: 0}
+  previewSpeed: 10
+  previewRange: 10

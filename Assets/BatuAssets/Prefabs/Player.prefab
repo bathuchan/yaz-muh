@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trajectoryStartPosition: {fileID: 7179493087580852249}
+  currentAimPosition: {fileID: 311604308199437188}
   playerLook: {fileID: 9161588999262510177}
   playerAbility: {fileID: 8014023384351182305}
 --- !u!120 &7875980735323168497
@@ -260,7 +261,7 @@ Transform:
   m_GameObject: {fileID: 2243990483784228176}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.75, z: 0}
   m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -569,6 +570,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerState: {fileID: -719153631149836974}
+  playerAnimationsController: {fileID: 0}
   playerRb: {fileID: 8229289297725139061}
 --- !u!114 &-719153631149836974
 MonoBehaviour:
@@ -770,11 +772,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TransitionStateInfoList:
   - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: -1337100055
+    Layer: 1
+    OriginatingState: -503793751
     DestinationState: -507604865
     TransitionDuration: 0
-    TriggerNameHash: -686929456
+    TriggerNameHash: 927345678
     TransitionIndex: 0
   m_Animator: {fileID: 3876472235705338633}
 --- !u!114 &3987441712449987991

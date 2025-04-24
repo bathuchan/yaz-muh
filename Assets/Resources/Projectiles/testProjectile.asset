@@ -15,11 +15,11 @@ MonoBehaviour:
   projectileId: 1
   prefab: {fileID: 1604549114725349650, guid: cc2f63d377ecbd3458f12a93a85ee3da, type: 3}
   baseDamage: 10
-  elementType: 0
+  elementType: 1
   baseCriticalChange: 0.05
-  speed: 9
+  speed: 25
   cooldown: 10
   duration: 10
   range: 8
   description: asdsad
-  trajectoryStyle: {fileID: 11400000, guid: ca490fb09921ac84b84c06cdfffdcc36, type: 2}
+  trajectoryStyle: {fileID: 11400000, guid: e6ad874a733d1ec4d9273ceda1ef0292, type: 2}

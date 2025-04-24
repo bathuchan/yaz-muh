@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: testProjectile 2
   m_EditorClassIdentifier: 
   projectileId: 3
-  prefab: {fileID: 1604549114725349650, guid: d95dec379e53d9a4086e67d4839c23bd, type: 3}
+  prefab: {fileID: 1604549114725349650, guid: 2a71899f0acb06543bc39c4b9bd8045c, type: 3}
   baseDamage: 50
-  elementType: 1
+  elementType: 2
   baseCriticalChange: 0.05
   speed: 0
   cooldown: 5

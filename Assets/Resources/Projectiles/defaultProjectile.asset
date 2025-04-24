@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21fe747ff6fc2454eb8e0274de237a66, type: 3}
+  m_Name: defaultProjectile
+  m_EditorClassIdentifier: 
+  projectileId: 0
+  prefab: {fileID: 1604549114725349650, guid: 8b40344d7780a52488d4ac690437734f, type: 3}
+  baseDamage: 10
+  elementType: 0
+  baseCriticalChange: 0.05
+  speed: 20
+  cooldown: 10
+  duration: 10
+  range: 7
+  description: asdsad
+  trajectoryStyle: {fileID: 11400000, guid: b622195e44abb314f9aba2075ded7c67, type: 2}
