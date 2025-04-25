@@ -6,6 +6,7 @@ using UnityEngine.LowLevel;
 public class Projectile : NetworkBehaviour
 {
     private Rigidbody rb;
+    private Vector3 velocity;
     private SpawnInfo spawnInfo;
     [SerializeField] private ProjectileData projectileData;
     PlayerNetwork playerNetwork;
@@ -13,6 +14,9 @@ public class Projectile : NetworkBehaviour
     public NetworkObject networkObject;
     Vector3 spawnPoint;
     ulong networkId;
+    [HideInInspector] public MeshRenderer meshRenderer;
+    public bool isVisualOnly = false; // Set to true for client-side visuals
+
 
     private Vector3[] pathPoints;
     private int currentPathIndex = 0;
@@ -27,32 +31,35 @@ public class Projectile : NetworkBehaviour
     {
         networkObject = GetComponent<NetworkObject>();
         rb = GetComponent<Rigidbody>();
+        meshRenderer = GetComponent<MeshRenderer>();
     }
 
     public override void OnNetworkSpawn()
     {
-        if (projectileData.trajectoryStyle is CircularTrajectory)
-        {
-            rb.isKinematic = true; // Don't move
-        }
-        else
-        {
-            rb.isKinematic = false;
-        }
+        Debug.Log("PROJECTILE SPAWNDEN ON SERVER");
+        //if (projectileData.trajectoryStyle is CircularTrajectory)
+        //{
+        //    rb.isKinematic = true; // Don't move
+        //}
+        //else
+        //{
+        //    rb.isKinematic = false;
+        //}
 
     }
 
-    public void Initialize(SpawnInfo spawnInfo, Vector3 spawnPoint, Collider shooterCollider, PlayerNetwork playerNetwork, PlayerState playerState, ulong networkId)
+    public void Initialize(SpawnInfo spawnInfo, Collider shooterCollider, PlayerNetwork playerNetwork, PlayerState playerState, ulong networkId)
     {
         this.spawnInfo = spawnInfo;
-        this.spawnPoint = spawnPoint;
+        this.spawnPoint = spawnInfo.spawnPoint;
         this.projectileData = ProjectileDatabase.Instance.GetProjectileData(spawnInfo.projectileId);
         this.playerNetwork = playerNetwork;
         this.playerState = playerState;
         this.networkId = networkId;
 
-        // rb = GetComponent<Rigidbody>();
-        rb.isKinematic = true; // we'll control movement manually
+        //velocity = spawnInfo.direction.normalized * (projectileData.speed != 0 ? projectileData.speed : moveSpeed);
+        //rb.velocity = velocity;
+
 
         Collider projectileCollider = GetComponent<Collider>();
         if (projectileCollider != null && shooterCollider != null)
@@ -66,75 +73,149 @@ public class Projectile : NetworkBehaviour
             currentPathIndex = 0;
         }
 
+        if (isVisualOnly)
+        { 
+            meshRenderer.enabled = true;
+        }
+        else 
+        {
+            meshRenderer.enabled = false;
+        }
+
+        if (projectileData.trajectoryStyle is CircularTrajectory)
+        {
+            rb.isKinematic = true; // Don't move
+        }
+        else
+        {
+            rb.isKinematic = false;
+        }
+
+
         gameObject.SetActive(true);
     }
 
     private void Start()
     {
+        
+        //if (IsSpawned) return;
 
+        //meshRenderer.enabled = true;
+        //rb.isKinematic = false;
+
+        // Assign velocity for visual-only
+        if (isVisualOnly && projectileData.trajectoryStyle != null && !(projectileData.trajectoryStyle is CircularTrajectory))
+        {
+            //velocity = spawnInfo.direction.normalized * (projectileData.speed != 0 ? projectileData.speed : moveSpeed);
+            //rb.velocity = velocity;
+        }
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
-        if ((pathPoints == null || pathPoints.Length == 0) && networkObject.IsSpawned) { return; }
-        else if (currentPathIndex == pathPoints.Length)
+        if (rb == null || pathPoints == null || pathPoints.Length == 0) return;
+        if (currentPathIndex >= pathPoints.Length)
         {
-            if (IsServer) networkObject.Despawn();
-            if (IsClient) this.gameObject.SetActive(false);
+            if (isVisualOnly)
+            {
+                Destroy(gameObject);
+            }
+            else if (IsServer && networkObject.IsSpawned)
+            {
+                networkObject.Despawn();
+            }
             return;
         }
 
-        if (currentPathIndex >= pathPoints.Length)
-        {
-
-
-            //Destroy(gameObject);
-
-        }
-
-        // Move toward the next point
+        Vector3 currentPos = rb.position;
         Vector3 target = pathPoints[currentPathIndex];
-        float step = (projectileData.speed != 0 ? projectileData.speed : moveSpeed) * Time.deltaTime;
+        float speed = (projectileData.speed != 0 ? projectileData.speed : moveSpeed);
+        Vector3 direction = (target - currentPos).normalized;
 
-        transform.position = Vector3.MoveTowards(transform.position, target, step);
+        // Apply velocity
+        rb.velocity = direction * speed;
 
-        if (Vector3.Distance(transform.position, target) < 0.05f)
+        // Smooth rotation toward movement direction
+        if (direction != Vector3.zero)
+        {
+            //Quaternion targetRotation = Quaternion.LookRotation(direction);
+            //rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRotation, 0.15f));
+        }
+    }
+
+
+    private void Update()
+    {
+        if (rb == null || pathPoints == null || pathPoints.Length == 0) return;
+        if (currentPathIndex >= pathPoints.Length) return;
+
+        Vector3 currentPos = rb.position;
+        Vector3 target = pathPoints[currentPathIndex];
+
+        // Check distance to advance to next point
+        if (Vector3.Distance(currentPos, target) < 1f) 
         {
             currentPathIndex++;
-
         }
-        //if (Vector3.Distance(spawnPoint, transform.position) >= projectileData.range)
-        //{
-        //    Destroy(gameObject);
-        //}
     }
+
+
+
+
+
+
+    //private void Update()
+    //{
+    //    if (pathPoints == null || pathPoints.Length == 0) return;
+
+    //    if (currentPathIndex >= pathPoints.Length)
+    //    {
+    //        if (isVisualOnly)
+    //        {
+    //            Destroy(gameObject); // Visual projectiles are local
+    //        }
+    //        else if (IsServer && networkObject.IsSpawned)
+    //        {
+    //            networkObject.Despawn(); // Authoritative cleanup
+    //        }
+
+    //        return;
+    //    }
+
+    //    Vector3 target = pathPoints[currentPathIndex];
+    //    float step = (projectileData.speed != 0 ? projectileData.speed : moveSpeed) * Time.deltaTime;
+
+    //    transform.position = Vector3.MoveTowards(transform.position, target, step);
+
+    //    if (Vector3.Distance(transform.position, target) < 0.05f)
+    //    {
+    //        currentPathIndex++;
+    //    }
+    //}
 
     private void OnTriggerEnter(Collider other)
     {
-        if (IsClient) 
+        if (isVisualOnly)
         {
-            this.gameObject.SetActive(false);
+            Destroy(gameObject); // Destroy locally for visual projectiles
+            return;
         }
 
         if (IsServer)
         {
-
             if (other.CompareTag("Player"))
             {
                 Debug.Log($"[SERVER] Projectile hit {other.name}");
-
-                // Apply effects or damage to player if needed
-                //DestroyProjectileServerRpc();
+                // Apply damage/effects here if needed
             }
-            else
+
+            if (networkObject.IsSpawned)
             {
                 networkObject.Despawn();
-                //Destroy(gameObject);
             }
         }
-        //DestroyProjectileServerRpc();
-
     }
+
 
     [ServerRpc(RequireOwnership = false)]
     private void DestroyProjectileServerRpc()

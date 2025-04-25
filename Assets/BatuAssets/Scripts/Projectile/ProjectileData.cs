@@ -26,6 +26,8 @@ public struct SpawnInfo: INetworkSerializable
     
     public Vector3 direction;
 
+    public Vector3 spawnPoint;
+
 
     
 
@@ -33,7 +35,10 @@ public struct SpawnInfo: INetworkSerializable
     {
         serializer.SerializeValue(ref projectileId);
         
-        serializer.SerializeValue(ref direction); 
-        
+        serializer.SerializeValue(ref direction);
+
+        serializer.SerializeValue(ref spawnPoint);
+
+
     }
 }

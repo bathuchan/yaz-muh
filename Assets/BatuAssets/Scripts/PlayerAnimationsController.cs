@@ -13,14 +13,13 @@ public class PlayerAnimationsController : NetworkBehaviour
 
     public void TriggerAttackAnimation()
     {
-        // Ensure local owner triggers animation
-        networkAnimator.SetTrigger("AbilityCast");
+        networkAnimator.Animator.SetTrigger("AbilityCast"); // Still correct
     }
 
-    public void UpdateBool(string boolName,bool value)
+    public void UpdateBool(string boolName, bool value)
     {
-        // Ensure local owner triggers animation
-        networkAnimator.Animator.SetBool(boolName, value);
+        Debug.Log($"[ANIM] Setting {boolName} to {value}");
+        networkAnimator.Animator.SetBool(boolName, value); // This is fine
     }
 
     public bool GetBool(string boolName)

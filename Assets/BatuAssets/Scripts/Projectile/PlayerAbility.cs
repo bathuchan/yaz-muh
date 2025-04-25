@@ -74,13 +74,17 @@ public class PlayerAbility : NetworkBehaviour
         }
 
 
-
+        Vector3 spawnPosition = currentProjectileData.trajectoryStyle is CircularTrajectory
+           ? playerLook.trajectoryManager.currentAimPosition.position + Vector3.up * 0.95f
+           : firePoint.position;
 
         SpawnInfo spawnInfo = new SpawnInfo
         {
             projectileId = this.projectileId,
 
-            direction = playerLook.playerModel.transform.forward
+            direction = playerLook.playerModel.transform.forward,
+
+            spawnPoint = spawnPosition
 
         };
 
@@ -97,13 +101,11 @@ public class PlayerAbility : NetworkBehaviour
         Debug.Log($"[SERVER] Received request to spawn projectile {spawnInfo.projectileId}");
 
         ProjectileData projectileData = ProjectileDatabase.Instance.GetProjectileData(spawnInfo.projectileId);
-        Vector3 spawnPosition = projectileData.trajectoryStyle is CircularTrajectory ?
-            playerLook.trajectoryManager.currentAimPosition.position+ Vector3.up * 0.95f :
-            firePoint.position;
+       
 
         GameObject projectileInstance = Instantiate(
             projectileData.prefab,
-            spawnPosition,
+            spawnInfo.spawnPoint,
             Quaternion.identity
         );
         projectileInstance.name = "ServerProj";
@@ -111,81 +113,123 @@ public class PlayerAbility : NetworkBehaviour
         Projectile projectile = projectileInstance.GetComponent<Projectile>();
         if (projectile != null)
         {
-            ulong  networkId = projectile.networkObject.NetworkObjectId;
-            projectile.Initialize(spawnInfo, firePoint.position, shooterCollider, playerNetwork, playerState, networkId);
-            projectile.networkObject.Spawn();
+            ulong networkId = projectile.networkObject.NetworkObjectId;
+            projectile.isVisualOnly = true;
+            projectile.meshRenderer.material.color=Color.white;
+            projectile.Initialize(spawnInfo, shooterCollider, playerNetwork, playerState, networkId);
+         
+            //projectile.networkObject.Spawn();
 
-            // Call client to initialize their version too
-            InitializeProjectileClientRpc(spawnInfo, spawnPosition, networkId, projectileInstance.GetComponent<NetworkObject>().NetworkObjectId);
+            // Tell clients to spawn visual projectile
+            SpawnVisualProjectileClientRpc(spawnInfo);
+        }
+    }
+
+    //[ClientRpc]
+    //private void InitializeProjectileClientRpc(SpawnInfo spawnInfo, Vector3 spawnPoint, ulong networkId, ulong netObjId)
+    //{
+    //    // This runs on each client after the projectile is spawned
+    //    if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(netObjId, out NetworkObject projectileNetObj))
+    //    {
+    //        Projectile projectile = projectileNetObj.GetComponent<Projectile>();
+    //        if (projectile != null)
+    //        {
+    //            Collider shooterCollider = GetComponentInChildren<Collider>(); // Or find another way to pass this
+    //            projectile.Initialize(spawnInfo, spawnPoint, shooterCollider, playerNetwork, playerState, networkId);
+    //            projectile.isVisualOnly = false;
+    //        }
+    //        else
+    //        {
+    //            Debug.LogError("[CLIENT] Could not find Projectile script on spawned object.");
+    //        }
+    //    }
+    //    else
+    //    {
+    //        Debug.LogError("[CLIENT] Could not find NetworkObject with ID: " + netObjId);
+    //    }
+    //}
+
+    [ClientRpc]
+    private void SpawnVisualProjectileClientRpc(SpawnInfo spawnInfo)
+    {
+        if (IsServer) return; //  Server already has its own projectile
+
+        ProjectileData projectileData = ProjectileDatabase.Instance.GetProjectileData(spawnInfo.projectileId);
+        if (projectileData == null)
+        {
+            Debug.LogError("[CLIENT] Invalid projectile ID for visual spawn!");
+            return;
+        }
+      
+
+        GameObject visualProjectile = Instantiate(
+            projectileData.prefab,
+            spawnInfo.spawnPoint,
+            Quaternion.identity
+        );
+        visualProjectile.name = "VisualClientProjectile";
+
+        Projectile projectile = visualProjectile.GetComponent<Projectile>();
+        if (projectile != null)
+        {
+            ulong networkId = projectile.networkObject.NetworkObjectId;
+            projectile.isVisualOnly = true;
+            projectile.Initialize(spawnInfo, shooterCollider, playerNetwork, playerState, networkId);
+           
+
+            // Tell clients to spawn visual projectile
+            //SpawnVisualProjectileClientRpc(spawnInfo, spawnPoint);
+        }
+
+        // Make it visual-only
+        //Collider col = visualProjectile.GetComponent<Collider>();
+        //if (col) col.enabled = false;
+
+        //Rigidbody rb = visualProjectile.GetComponent<Rigidbody>();
+        //if (rb) rb.isKinematic = true;
+
+        // You can add a movement script or animation here too
+        //Destroy(visualProjectile, 3f);
+    }
+
+
+
+    [ClientRpc]
+    private void SpawnProjectileClientRpc(SpawnInfo spawnInfo, ulong networkId)
+    {
+        Debug.Log($"[CLIENT] Received SpawnProjectileClientRpc! Projectile network ID: {networkId}");
+
+        ProjectileData projectileData = ProjectileDatabase.Instance.GetProjectileData(spawnInfo.projectileId);
+        if (projectileData == null)
+        {
+            Debug.LogError("[SERVER] Invalid projectile ID!");
+            return;
+        }
+
+        Vector3 spawnPosition = projectileData.trajectoryStyle is CircularTrajectory ?
+     playerLook.trajectoryManager.currentAimPosition.position : firePoint.position;
+
+        GameObject projectileInstance = Instantiate(
+            projectileData.prefab,
+            spawnPosition,
+            Quaternion.identity
+        );
+        projectileInstance.name = "CLientProj";
+
+        // Initialize projectile with shooter collider
+
+        Projectile projectile = projectileInstance.GetComponent<Projectile>();
+        if (projectile != null)
+        {
+
+            projectile.Initialize(spawnInfo, shooterCollider, playerNetwork, playerState, networkId);
+
         }
         else
         {
             Debug.LogError("[SERVER] Spawned projectile is missing the Projectile component!");
         }
     }
-
-
-    [ClientRpc]
-    private void InitializeProjectileClientRpc(SpawnInfo spawnInfo, Vector3 spawnPoint, ulong networkId, ulong netObjId)
-    {
-        // This runs on each client after the projectile is spawned
-        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(netObjId, out NetworkObject projectileNetObj))
-        {
-            Projectile projectile = projectileNetObj.GetComponent<Projectile>();
-            if (projectile != null)
-            {
-                Collider shooterCollider = GetComponentInChildren<Collider>(); // Or find another way to pass this
-                projectile.Initialize(spawnInfo, spawnPoint, shooterCollider, playerNetwork, playerState, networkId);
-            }
-            else
-            {
-                Debug.LogError("[CLIENT] Could not find Projectile script on spawned object.");
-            }
-        }
-        else
-        {
-            Debug.LogError("[CLIENT] Could not find NetworkObject with ID: " + netObjId);
-        }
-    }
-
-
-
-    //[ClientRpc]
-    //private void SpawnProjectileClientRpc(SpawnInfo spawnInfo, int networkId)
-    //{
-    //    Debug.Log($"[CLIENT] Received SpawnProjectileClientRpc! Projectile network ID: {networkId}");
-
-    //    ProjectileData projectileData = ProjectileDatabase.Instance.GetProjectileData(spawnInfo.projectileId);
-    //    if (projectileData == null)
-    //    {
-    //        Debug.LogError("[SERVER] Invalid projectile ID!");
-    //        return;
-    //    }
-
-    //    Vector3 spawnPosition = projectileData.trajectoryStyle is CircularTrajectory ?
-    // playerLook.trajectoryManager.currentAimPosition.position : firePoint.position;
-
-    //    GameObject projectileInstance = Instantiate(
-    //        projectileData.prefab,
-    //        spawnPosition,
-    //        Quaternion.identity
-    //    );
-    //    projectileInstance.name = "CLientProj";
-
-    //    // Initialize projectile with shooter collider
-
-    //    Projectile projectile = projectileInstance.GetComponent<Projectile>();
-    //    if (projectile != null)
-    //    {
-
-    //        projectile.Initialize(spawnInfo, firePoint.position, shooterCollider, playerNetwork, playerState, networkId);
-
-    //    }
-    //    else
-    //    {
-    //        Debug.LogError("[SERVER] Spawned projectile is missing the Projectile component!");
-    //    }
-    //}
 
 
 
