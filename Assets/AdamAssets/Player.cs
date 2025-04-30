@@ -44,6 +44,7 @@ public class Player : NetworkBehaviour , IDamageable
         abilities = new AbilitySystem(GameObject.FindFirstObjectByType<AbilityFactory>());
         inputSystem = new PlayerInputSystem(Camera.main);
         abilities.AddActiveAbility("Fireball");
+        abilities.AddActiveAbility("FireBoomerang");
         abilities.AddActiveAbility("MushroomSpell");
     }
 

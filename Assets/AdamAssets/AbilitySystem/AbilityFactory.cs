@@ -11,60 +11,62 @@ using UnityEngine;
 
 public class AbilityFactory : MonoBehaviour
 {
-
-    public ScriptableProjectileSpell[] projectileSpells;
-    public ScriptableDOTSpell[] damageOverTimeSpells;
-    public ScriptableSpawnableSpell[] spawnableSpells;
+    public ScriptableAbility[] abilities;
 
 
     private void Awake()
     {
-        projectileSpells = Resources.LoadAll<ScriptableProjectileSpell>("Spells/ProjectileSpells");
-        damageOverTimeSpells = Resources.LoadAll<ScriptableDOTSpell>("Spells/DOTSpells");
-        spawnableSpells = Resources.LoadAll<ScriptableSpawnableSpell>("Spells/SpawnableSpells");
-        Debug.Log(projectileSpells[0].name);
+
+
+        abilities = Resources.LoadAll<ScriptableAbility>("Spells/");
+
     }
 
 
 
+    private AbstractAbility initializeAbility(ScriptableAbility ability)
+    {
+
+        switch (ability)
+        {
+            case ScriptableDOTSpell dot:
+                PrimaryAbilityStats stat1 = new PrimaryAbilityStats(dot.element, dot.damagePeriod, dot.damagePerSecond, dot.canCrit);
+                return new DamageOverTimeSpell(stat1, dot.duration, dot.damagePerSecond);
+
+            case ScriptableSpawnableSpell spwn:
+                PrimaryAbilityStats stat2 = new PrimaryAbilityStats(spwn.element, spwn.cooldownSeconds , spwn.baseDamage , spwn.canCrit);
+                return new SpawnAbilitySpell(stat2, spwn.lifeSpan, spwn.prefab);
+
+
+            case ScriptableProjectileSpell p: 
+                PrimaryAbilityStats stat3 = new PrimaryAbilityStats(p.element , p.cooldownSeconds , p.baseDamage , p.canCrit);
+                return new ProjectileSpell(stat3 , p.speed , p.range , p.prefab);
+
+
+            case ScriptableBoomerang bm: 
+                PrimaryAbilityStats stat4 = new PrimaryAbilityStats(bm.element, bm.cooldownSeconds , bm.baseDamage , bm.canCrit);
+                return new BoomerangSpell(stat4, bm.speed, bm.prefab);
+
+            default:
+                return null;
+                break;
+
+
+
+        }
+    }
+
+
     public AbstractAbility MakeAbility(string id){
 
-        for(int i = 0; i < projectileSpells.Length; i++)
-        {
-            ScriptableProjectileSpell spell = projectileSpells[i];
-            if (id.Equals(spell.name))
-            {
-                PrimaryAbilityStats stats = new PrimaryAbilityStats(spell.element, spell.cooldownSeconds, spell.baseDamage, spell.canCrit);
-                return new ProjectileSpell(stats, spell.speed, spell.range, spell.prefab);
-            }
 
+        for(int i = 0; i < abilities.Length; i++)
+        {
+            ScriptableAbility ability = abilities[i];
+            if (id.Equals(ability.name))
+                return initializeAbility(ability);
 
         }
-
-
-        for(int i = 0;i < damageOverTimeSpells.Length; i++)
-        {
-            ScriptableDOTSpell spell = damageOverTimeSpells[i];
-            if (id.Equals(spell.name))
-            {
-                PrimaryAbilityStats stats = new PrimaryAbilityStats(spell.element, spell.damagePeriod , spell.damagePerSecond , spell.canCrit);
-                return new DamageOverTimeSpell( stats , spell.duration, spell.damagePerSecond); 
-            }
-        }
-
-
-        for (int i = 0; i < spawnableSpells.Length; i++)
-        {
-            ScriptableSpawnableSpell spell = spawnableSpells[i];
-            if (id.Equals(spell.name))
-            {
-                PrimaryAbilityStats stats = new PrimaryAbilityStats(spell.element , spell.cooldownSeconds , spell.baseDamage , spell.canCrit);
-                return new SpawnAbilitySpell(stats, spell.lifeSpan, spell.prefab);
-
-            }
-        }
-
-        Debug.Log(string.Format("couldnt found {0} ::: {1}", id , id == projectileSpells[1].name));
         return null;    
     }
 

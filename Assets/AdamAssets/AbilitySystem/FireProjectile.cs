@@ -10,6 +10,7 @@ public class FireProjectile : ProjectileBehaviour
     {
         burnSpell = GameObject.FindFirstObjectByType<AbilityFactory>().MakeAbility("Burnt") as DamageOverTimeSpell;
         burnSpell.damage.Initialize(source.stats.damageMultiplier, source.stats.criticalChance, source.stats.criticalMultiplier);
+       
     }
 
 

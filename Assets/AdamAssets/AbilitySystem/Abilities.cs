@@ -11,10 +11,6 @@ public class PrimaryAbilityStats
     public bool CanCrit { get; private set; }
 
 
-    const float MAX_COOLDOWN_SECS = float.MaxValue;
-    const float MAX_DAMAGE = float.MaxValue;
-
-
     public PrimaryAbilityStats(ElementType type, float cooldownInSeconds, float baseDamage, bool canCrit)
     {
         Type = type;
@@ -33,24 +29,7 @@ public class PrimaryAbilityStats
     
     }
 
-    public void SetCooldown(float cooldownInSeconds)
-    {
-        if (cooldownInSeconds < 0)
-            Debug.LogWarning("Cooldown is negative");
-        else
-            CooldownInSeconds = Mathf.Clamp(cooldownInSeconds, 0f, MAX_COOLDOWN_SECS);
-    }
 
-
-    public void SetBaseDamage(float damage)
-    {
-        if (damage < 0)
-            Debug.LogWarning("Damage is negative");
-        else
-            BaseDamage = Mathf.Clamp(damage, 0f, MAX_DAMAGE);
-    }
-
-    public void SetCanCrit(bool canCrit) => CanCrit = canCrit;
 
 }
 
@@ -86,7 +65,7 @@ public abstract class  AbstractAbility
     
 
 
-    public virtual void Update(Player player)
+    public void Update(Player player)
     {
         if (cooldown.IsFinished && isTriggered())
         {
@@ -147,10 +126,52 @@ public class ProjectileSpell : AbstractAbility
         projectile.speed = speed; 
         projectile.range = range;
         projectile.source = player;
+        Debug.Log("MySpell");
     }
 
 
 }
+
+
+public class BoomerangSpell : AbstractAbility
+{
+    public float speed;
+    public float baseDamage;
+    public BoomerangBehaviour projectile;
+    public BoomerangSpell(PrimaryAbilityStats stats , float speed , BoomerangBehaviour projectile) : base( stats)
+    {
+        this.speed = speed;
+        this.stats = stats;
+        this.projectile = projectile;
+
+    }
+
+    public BoomerangSpell(PrimaryAbilityStats stats, float speed, BoomerangBehaviour projectile , System.Func<bool> isTriggered) : base(stats , isTriggered)
+    {
+        this.speed = speed;
+        this.stats = stats;
+        this.projectile=projectile;
+        this.isTriggered = isTriggered;
+
+    }
+
+
+    public override void CastBy(Player player) 
+    { 
+        BoomerangBehaviour boomerang = Object.Instantiate(this.projectile , player.transform.position , Quaternion.identity);
+        boomerang.targetPos = player.inputSystem.targetPos;
+        boomerang.damage = new Damage(stats.Type , (int)stats.BaseDamage , 0f , 0f);
+        boomerang.speed = speed;
+        boomerang.source = player;
+        boomerang.piercing = 2;
+
+        Debug.Log(string.Format("Casting the spell :{0}", nameof(BoomerangSpell)));
+    
+    }
+
+
+}
+
 
 
 public class DamageOverTimeSpell : AbstractAbility
