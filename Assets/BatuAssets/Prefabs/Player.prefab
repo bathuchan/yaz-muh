@@ -163,12 +163,12 @@ GameObject:
   - component: {fileID: 2701108124209603277}
   - component: {fileID: 6433562131548411978}
   m_Layer: 6
-  m_Name: Cube
+  m_Name: Forward
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8939867005524851229
 Transform:
   m_ObjectHideFlags: 0
@@ -481,6 +481,7 @@ GameObject:
   - component: {fileID: 186105162003302547}
   - component: {fileID: 2876993703429051565}
   - component: {fileID: 6513878948620579404}
+  - component: {fileID: 3025170160017992790}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -575,6 +576,9 @@ MonoBehaviour:
   playerState: {fileID: -719153631149836974}
   playerAnimationsController: {fileID: 0}
   playerRb: {fileID: 8229289297725139061}
+  modelRenderer:
+  - {fileID: 234014829149485143}
+  - {fileID: 1822379023665017673}
 --- !u!114 &-719153631149836974
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -709,20 +713,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TransitionStateInfoList:
   - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: -503793751
+    Layer: 1
+    OriginatingState: 169865506
     DestinationState: -507604865
-    TransitionDuration: 0.14913301
+    TransitionDuration: 0
     TriggerNameHash: 927345678
-    TransitionIndex: 1
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: -1337100055
-    DestinationState: -507604865
-    TransitionDuration: 0.25
-    TriggerNameHash: 927345678
-    TransitionIndex: 1
+    TransitionIndex: 0
   m_Animator: {fileID: 186105162003302547}
+--- !u!114 &3025170160017992790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5731835462059271113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c66dd45c88a9e7d4ea6e3f13a3c78338, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &7251194919084177048
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -812,6 +821,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a79d3f05f0fecd4429b92c7e5fb3dd84, type: 3}
+--- !u!137 &234014829149485143 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7466414453765033679, guid: a79d3f05f0fecd4429b92c7e5fb3dd84,
+    type: 3}
+  m_PrefabInstance: {fileID: 7251194919084177048}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &1822379023665017673 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -150009337949190703, guid: a79d3f05f0fecd4429b92c7e5fb3dd84,
+    type: 3}
+  m_PrefabInstance: {fileID: 7251194919084177048}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7146036273929277811 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a79d3f05f0fecd4429b92c7e5fb3dd84,

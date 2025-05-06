@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 3217735525596930860}
   - component: {fileID: 1318891728714700103}
   - component: {fileID: 756679164411270287}
-  - component: {fileID: 2069078596619006329}
   - component: {fileID: 7751145699189714876}
   m_Layer: 7
   m_Name: Projectile 2
@@ -34,7 +33,8 @@ Transform:
   m_LocalPosition: {x: -0.9334358, y: 0.5675512, z: 0.06826444}
   m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_ConstrainProportionsScale: 1
-  m_Children: []
+  m_Children:
+  - {fileID: 353440805954714914}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &5632477222437860175
@@ -135,27 +135,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 0
---- !u!114 &2069078596619006329
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1604549114725349650}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1920385942
-  InScenePlacedSourceGlobalObjectIdHash: 557827823
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
 --- !u!114 &7751145699189714876
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -169,4 +148,58 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   projectileData: {fileID: 11400000, guid: 67de9bb376281d2488379ed6f2acc086, type: 2}
-  networkObject: {fileID: 2069078596619006329}
+  meshRenderer: {fileID: 0}
+  visualizeMesh: 0
+--- !u!1 &3188717287800559954
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 353440805954714914}
+  - component: {fileID: 8119202946583545374}
+  m_Layer: 7
+  m_Name: VFX
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &353440805954714914
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3188717287800559954}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8050861920789139593}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8119202946583545374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3188717287800559954}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5947f84f593d79d42ba380824dca2292, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vfxContainer: {fileID: 0}
+  vfxToSpawn:
+  - {fileID: 4135732490992796752, guid: 691116ca5cfbfe14b882689a398d4090, type: 3}
+  - {fileID: 3447766460298414819, guid: 303b88b3a11b9e9419391766607e1355, type: 3}
+  impactVfxs:
+  - {fileID: 4135732490992796752, guid: 07aa2cbf5faafcd45bcc2154e19c6178, type: 3}
+  useImpactVfxOnDespawn: 0
+  despawnVfxs:
+  - {fileID: 6029531568038954226, guid: 926def4dd44300a4eb5af5b9cd5de0fe, type: 3}

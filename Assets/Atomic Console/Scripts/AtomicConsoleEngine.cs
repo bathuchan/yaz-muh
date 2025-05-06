@@ -15,6 +15,7 @@ using AtomicAssembly.GeneratedCommands;
 using AtomicAssembly;
 using System.Net;
 using Unity.VisualScripting;
+using UnityEngine.InputSystem;
 
 namespace AtomicConsole.Engine
 {
@@ -222,14 +223,17 @@ namespace AtomicConsole.Engine
 
         private void Update()
         {
-            if (Input.GetKeyDown(ToggleConsoleInput) && !isVisible)
+            
+        }
+
+        public void ConsoleButton() 
+        {
+            if (!isVisible)
             {
                 ToggleConsole(!isVisible);
                 SkipFrameUpdate = true;
             }
         }
-
-
 
         private void LateUpdate()
         {
@@ -2363,7 +2367,7 @@ namespace AtomicConsole.Engine
         private bool _isResizing;
         private void ResizeWindow()
         {
-            Vector2 mouse = GUIUtility.ScreenToGUIPoint(new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y));
+            Vector2 mouse = GUIUtility.ScreenToGUIPoint(new Vector2(Mouse.current.position.ReadValue().x, Screen.height - Mouse.current.position.ReadValue().y));
             Rect resizeArea = new Rect(windowRect.width - 20, windowRect.height - 20, 20, 20);
 
             if (Event.current.type == EventType.MouseDown && resizeArea.Contains(mouse))

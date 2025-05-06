@@ -18,17 +18,33 @@ public class PlayerNetwork : NetworkBehaviour
     [HideInInspector] public Stopwatch inputDeltaTime { get; private set; }
     [HideInInspector] public Stopwatch tickDeltaTime { get; private set; }
 
-
+    [SerializeField] private Renderer[] modelRenderer;
+    private NetworkVariable<int> materialIndex = new NetworkVariable<int>(-1);
     public override void OnNetworkSpawn()
     {
 
+        if (IsServer)
+        {
+            int index = PlayerColorManager.Instance.AssignUniqueMaterialIndex();
+            materialIndex.Value = index;
+
+           // SetPlayerContainerParent();
+        }
+
+        ApplyMaterial(materialIndex.Value);
+
+        materialIndex.OnValueChanged += (oldValue, newValue) =>
+        {
+            ApplyMaterial(newValue);
+        };
+
         if (!IsOwner) return;
+        gameObject.name=gameObject.name+" (Owner)";
         playerState = GetComponent<PlayerState>();
         playerControls.Enable();
 
 
     }
-
 
     private void Awake()
     {
@@ -59,20 +75,26 @@ public class PlayerNetwork : NetworkBehaviour
     }
 
 
-
+    public override void OnNetworkDespawn()
+    {
+        if (IsServer && materialIndex.Value >= 0)
+        {
+            PlayerColorManager.Instance.ReleaseMaterialIndex(materialIndex.Value);
+        }
+    }
 
 
     private void Update()
     {
         if (!IsOwner) return;
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            //playerRb.AddForce(transform.forward*100f, ForceMode.Force);
-        }
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            //TakeDamageServerRpc(5);
-        }
+        //if (Input.GetKeyDown(KeyCode.T))
+        //{
+        //    //playerRb.AddForce(transform.forward*100f, ForceMode.Force);
+        //}
+        //if (Input.GetKeyDown(KeyCode.F))
+        //{
+        //    //TakeDamageServerRpc(5);
+        //}
 
 
     }
@@ -80,6 +102,22 @@ public class PlayerNetwork : NetworkBehaviour
     private void OnDisable()
     {
         playerControls.Disable();
+    }
+
+    private void ApplyMaterial(int index)
+    {
+        if (index >= 0 && index < PlayerColorManager.Instance.availableColors.Length)
+        {
+            Material mat = PlayerColorManager.Instance.GetMaterial(index);
+            Material[] currentMaterials = modelRenderer[0].materials;
+            currentMaterials[1] = mat;
+            modelRenderer[0].materials=currentMaterials;
+            currentMaterials = modelRenderer[1].materials;
+            currentMaterials[0] = mat;
+            modelRenderer[1].materials=currentMaterials;
+
+            gameObject.name = PlayerColorManager.Instance.GetName(index)+" Wizard";
+        }
     }
 
     [ServerRpc]

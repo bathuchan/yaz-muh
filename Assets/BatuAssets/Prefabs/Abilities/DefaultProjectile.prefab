@@ -13,10 +13,9 @@ GameObject:
   - component: {fileID: 3217735525596930860}
   - component: {fileID: 1318891728714700103}
   - component: {fileID: 756679164411270287}
-  - component: {fileID: 8856015614193196214}
   - component: {fileID: 7751145699189714876}
   m_Layer: 7
-  m_Name: Projectile
+  m_Name: DefaultProjectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -65,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: bbbe1a2fa19f4474c8a956b593a7fff8, type: 2}
+  - {fileID: 2100000, guid: c32e04f956f39cb429f3d769d657f5af, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -135,27 +134,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 0
---- !u!114 &8856015614193196214
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1604549114725349650}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3415955399
-  InScenePlacedSourceGlobalObjectIdHash: 0
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
 --- !u!114 &7751145699189714876
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -168,5 +146,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d025b27711c9c814198b89385f6a0646, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectileData: {fileID: 11400000, guid: e0d68e9f5af594b4bb999213697f03f4, type: 2}
-  networkObject: {fileID: 8856015614193196214}
+  projectileData: {fileID: 11400000, guid: f631d4998ae30824ebe15d706af7aaf5, type: 2}
+  meshRenderer: {fileID: 0}
+  visualizeMesh: 0

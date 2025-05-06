@@ -17,7 +17,7 @@ MonoBehaviour:
   baseDamage: 50
   elementType: 2
   baseCriticalChange: 0.05
-  speed: 0
+  speed: 20
   cooldown: 5
   duration: 10
   range: 10

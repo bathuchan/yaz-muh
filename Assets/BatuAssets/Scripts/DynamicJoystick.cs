@@ -1,66 +1,174 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.OnScreen;
+using UnityEngine.InputSystem.EnhancedTouch;
+using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
+using Finger = UnityEngine.InputSystem.EnhancedTouch.Finger;
+using System.Collections.Generic;
+
 
 public class DynamicJoystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
-    public RectTransform panel; // Parent panel for touch detection
-    public RectTransform joystickBase; // The background of the joystick
-    public RectTransform joystickKnob; // The moving part of the joystick
-    public OnScreenStick onScreenStick; // Reference to Unity's OnScreenStick
+    public RectTransform panel;
+    public RectTransform joystickBase;
+    public RectTransform joystickKnob;
+    public OnScreenStick onScreenStick;
 
-    private Vector2 originalBasePosition; // Store the original base position
-    private bool isDragging = false;
+    private Vector2 originalBasePosition;
+    private Finger activeFinger;
+    private bool isTouchDragging = false;
+    private bool isMouseDragging = false;
+    private int activePointerId = -1;
+    private bool useEnhancedTouch;
 
-    void Start()
+    private void OnEnable()
     {
-        // Store the initial base position
+#if UNITY_EDITOR || UNITY_STANDALONE
+        useEnhancedTouch = false;
+#elif UNITY_IPHONE || UNITY_ANDROID
+        useEnhancedTouch = true;
+#endif
+
+        if (useEnhancedTouch)
+        {
+            EnhancedTouchSupport.Enable();
+
+
+            Touch.onFingerDown += OnFingerDown;
+            Touch.onFingerMove += OnFingerMove;
+            Touch.onFingerUp += OnFingerUp;
+        }
+
+    }
+
+    private void OnDisable()
+    {
+
+        if (useEnhancedTouch)
+        {
+            Touch.onFingerDown -= OnFingerDown;
+            Touch.onFingerMove -= OnFingerMove;
+            Touch.onFingerUp -= OnFingerUp;
+
+            if (activeFinger != null)
+            {
+                TouchRegistry.ReleaseFinger(activeFinger.index, this);
+                activeFinger = null;
+            }
+
+            EnhancedTouchSupport.Disable();
+
+        }
+
+    }
+
+    private void Start()
+    {
         originalBasePosition = joystickBase.anchoredPosition;
     }
 
+    // --- MOBILE TOUCH HANDLING ---
+    private void OnFingerDown(Finger finger)
+    {
+
+        if (activeFinger != null || isMouseDragging)
+        {
+            //Debug.Log("Blocked: already dragging or using mouse.");
+            return;
+        }
+        if (TouchRegistry.IsFingerOwned(finger.index))
+        {
+            //Debug.Log("Blocked: finger already owned.");
+            return;
+        }
+
+        Vector2 screenPosition = finger.screenPosition;
+        if (RectTransformUtility.RectangleContainsScreenPoint(panel, screenPosition, null))
+        {
+            if (!TouchRegistry.ClaimFinger(finger.index, this))
+            {
+               // Debug.Log("Blocked: failed to claim finger.");
+                return;
+            }
+
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(panel, screenPosition, null, out Vector2 localPoint);
+            joystickBase.anchoredPosition = localPoint;
+            joystickKnob.anchoredPosition = Vector2.zero;
+
+            activeFinger = finger;
+            activePointerId = finger.index;
+            isTouchDragging = true;
+            //Debug.Log("Finger accepted and joystick activated!");
+
+            PointerEventData fakeEvent = new PointerEventData(EventSystem.current) { position = screenPosition, pointerId = activePointerId };
+            onScreenStick?.OnPointerDown(fakeEvent);
+        }
+    }
+
+    private void OnFingerMove(Finger finger)
+    {
+        if (!isTouchDragging || finger != activeFinger || finger.index != activePointerId) return;
+
+        PointerEventData fakeEvent = new PointerEventData(EventSystem.current) { position = finger.screenPosition, pointerId = activePointerId };
+        onScreenStick?.OnDrag(fakeEvent);
+    }
+
+    private void OnFingerUp(Finger finger)
+    {
+        if (!isTouchDragging || finger != activeFinger || finger.index != activePointerId) return;
+
+        isTouchDragging = false;
+        TouchRegistry.ReleaseFinger(finger.index, this);
+        activeFinger = null;
+        activePointerId = -1;
+
+        joystickKnob.anchoredPosition = Vector2.zero;
+        joystickBase.anchoredPosition = originalBasePosition;
+
+        PointerEventData fakeEvent = new PointerEventData(EventSystem.current) { position = finger.screenPosition, pointerId = finger.index };
+        onScreenStick?.OnPointerUp(fakeEvent);
+    }
+
+    // --- EDITOR/PC MOUSE HANDLING ---
     public void OnPointerDown(PointerEventData eventData)
     {
-        // Detect if the touch is inside the panel
-        if (RectTransformUtility.ScreenPointToLocalPointInRectangle(panel, eventData.position, eventData.pressEventCamera, out Vector2 touchStartPoint))
-        {
-            // Move joystick base to touch position
-            joystickBase.anchoredPosition = touchStartPoint;
-            joystickKnob.anchoredPosition = Vector2.zero;
-            isDragging = true;
+#if UNITY_EDITOR || UNITY_STANDALONE
+        if (activeFinger != null || isTouchDragging || isMouseDragging) return;
 
-            // Manually send OnPointerDown to OnScreenStick
-            if (onScreenStick != null)
-            {
-                onScreenStick.OnPointerDown(eventData);
-            }
+        if (RectTransformUtility.ScreenPointToLocalPointInRectangle(panel, eventData.position, eventData.pressEventCamera, out Vector2 localPoint))
+        {
+            joystickBase.anchoredPosition = localPoint;
+            joystickKnob.anchoredPosition = Vector2.zero;
+
+            isMouseDragging = true;
+            activePointerId = eventData.pointerId;
+
+            onScreenStick?.OnPointerDown(eventData);
         }
+#endif
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (!isDragging) return;
+#if UNITY_EDITOR || UNITY_STANDALONE
+        if (!isMouseDragging || eventData.pointerId != activePointerId) return;
 
-        // Forward drag input to OnScreenStick
-        if (onScreenStick != null)
-        {
-            onScreenStick.OnDrag(eventData);
-        }
+        onScreenStick?.OnDrag(eventData);
+#endif
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        if (!isDragging) return;
+#if UNITY_EDITOR || UNITY_STANDALONE
+        if (!isMouseDragging || eventData.pointerId != activePointerId) return;
 
-        isDragging = false;
+        isMouseDragging = false;
+        activePointerId = -1;
 
-        // Reset joystick knob and base to original position
         joystickKnob.anchoredPosition = Vector2.zero;
         joystickBase.anchoredPosition = originalBasePosition;
 
-        // Forward release input to OnScreenStick
-        if (onScreenStick != null)
-        {
-            onScreenStick.OnPointerUp(eventData);
-        }
+        onScreenStick?.OnPointerUp(eventData);
+#endif
     }
 }

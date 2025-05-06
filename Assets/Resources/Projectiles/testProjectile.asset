@@ -17,9 +17,9 @@ MonoBehaviour:
   baseDamage: 10
   elementType: 1
   baseCriticalChange: 0.05
-  speed: 25
+  speed: 15
   cooldown: 10
   duration: 10
-  range: 8
+  range: 12
   description: asdsad
-  trajectoryStyle: {fileID: 11400000, guid: e6ad874a733d1ec4d9273ceda1ef0292, type: 2}
+  trajectoryStyle: {fileID: 11400000, guid: ca490fb09921ac84b84c06cdfffdcc36, type: 2}

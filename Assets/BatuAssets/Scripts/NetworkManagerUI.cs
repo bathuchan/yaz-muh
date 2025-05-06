@@ -10,20 +10,27 @@ public class NetworkManagerUI : MonoBehaviour
     [SerializeField] private Button hostBtn;
     [SerializeField] private Button clientBtn;
 
+    //public string serverIp = "192.168.x.x";
+
     private void Awake()
     {
-        serverBtn.onClick.AddListener(() => {
+        serverBtn.onClick.AddListener(() =>
+        {
             NetworkManager.Singleton.StartServer();
 
         });
-        hostBtn.onClick.AddListener(() => {
+        hostBtn.onClick.AddListener(() =>
+        {
             NetworkManager.Singleton.StartHost();
 
         });
-        clientBtn.onClick.AddListener(() => {
+        clientBtn.onClick.AddListener(() =>
+        {
             NetworkManager.Singleton.StartClient();
+
 
         });
 
     }
+
 }
