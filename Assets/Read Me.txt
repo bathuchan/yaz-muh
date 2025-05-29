@@ -1,0 +1,8 @@
+
+Modelleri renklendirmek için materyallerdeki renkleri değiştirmeyin, ya da değiştirin ne olacağını görün
+ama sonrasında materyal rengini beyaza çekin.
+
+Farklı renkler elde etmek için, https://lospec.com/palette-list sitesinden renk paleti indirip
+yeni bir materyalin albedo bölümüne koyun ve materyali karaktere atayın.
+
+Farklı bir çözüm bulamadım açıkçası ama bu yöntemin de çalışacağını düşünüyorum.
