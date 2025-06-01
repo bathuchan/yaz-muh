@@ -37,8 +37,6 @@ Aşamalar:
 5. **Dağıtım:** Projenin yayınlanması
 6. **Bakım:** Geri bildirimlere göre güncelleme
 
-Dünya genelinden geliştiriciler, GitHub üzerinden issue’lar açarak katkıda bulunabilir. Katkıda bulunmak için `CONTRIBUTING.md` dosyasını inceleyin.
-
 
 ## 🌍 Katkıda Bulun
 Projeye katkı sağlamak isteyen geliştiricileri bekliyoruz:
