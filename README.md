@@ -6,7 +6,6 @@ Oyunda farklı arena tasarımları, dinamik çevresel etkileşimler ve özel etk
 
 ## 🎯 Proje Amacı ve Hedefleri
 - Eğlenceli, rekabetçi ve erişilebilir bir mobil oyun geliştirmek
-- Açık kaynak katkılarını teşvik etmek
 - Uluslararası bir oyuncu kitlesine hitap etmek
 - Oyun için adil bir sıralama sistemi sunmak
 
@@ -21,7 +20,7 @@ Oyunda farklı arena tasarımları, dinamik çevresel etkileşimler ve özel etk
 | Adem Berk YÜKSEL | Yazılım Geliştirici | Unity, C# |
 
 ## 🛠️ Kullanılan Teknolojiler
-- **Unity 2022.x** (Oyun motoru)
+- **Unity 2022.3** (Oyun motoru)
 - **C#** (Kodlama dili)
 - **Figma** (UI/UX tasarımı)
 - **GitHub** (Sürüm kontrol)
