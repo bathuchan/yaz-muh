@@ -15,6 +15,7 @@ Oyunda farklı arena tasarımları, dinamik çevresel etkileşimler ve özel etk
 |------|-----|--------------|
 | Batuhan ŞENGÜL | Yazılım Geliştirici \ Server Engineer | Unity, C#, Netcode |
 | Ahmet Talha GEÇGELEN | Yazılım Geliştirici \ Server Engineer | Unity, C#, Netcode |
+| Tolgahan DEMİRALP | Takım İletişim Sorumlusu | Unity, C# |
 | Enes BABEKOĞLU | UI/UX Tasarımcısı | Unity, C# |
 | Eren KANKILINÇ | 3D Game Artist \ VFX Developer | Blender, Unity, C# |
 | Adem Berk YÜKSEL | Yazılım Geliştirici | Unity, C# |
