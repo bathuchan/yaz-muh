@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 21fe747ff6fc2454eb8e0274de237a66, type: 3}
-  m_Name: testProjectile
+  m_Name: defaultProjectile
   m_EditorClassIdentifier: 
-  projectileId: 1
-  prefab: {fileID: 1604549114725349650, guid: cc2f63d377ecbd3458f12a93a85ee3da, type: 3}
+  projectileId: 0
+  prefab: {fileID: 1604549114725349650, guid: 8b40344d7780a52488d4ac690437734f, type: 3}
   baseDamage: 10
-  elementType: 1
+  elementType: 0
   baseCriticalChange: 0.05
-  speed: 15
+  speed: 18
   cooldown: 10
   duration: 10
-  range: 12
+  range: 7
   description: asdsad
-  trajectoryStyle: {fileID: 11400000, guid: ca490fb09921ac84b84c06cdfffdcc36, type: 2}
+  trajectoryStyle: {fileID: 11400000, guid: 5891f5cec3ecad04bacd47249c6dd462, type: 2}
