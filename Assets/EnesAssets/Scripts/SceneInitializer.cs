@@ -1,14 +1,21 @@
 using UnityEngine;
+using UnityEngine.Localization.Settings;
 
 public class SceneInitializer : MonoBehaviour
 {
     void Start()
     {
-        foreach (var anim in FindObjectsOfType<UIEntranceAnimator>())
+        // Localization tamamlandığında yapılacak işlemler
+        LocalizationSettings.InitializationOperation.Completed += _ =>
         {
-            if (!anim.enabled || !anim.gameObject.activeInHierarchy) continue;
+            Debug.Log("✅ Localization initialized.");
 
-            anim.StartCoroutine(anim.PlayEntrance());
-        }
+            // Localization yüklendikten sonra giriş animasyonlarını çalıştır
+            foreach (var anim in FindObjectsOfType<UIEntranceAnimator>())
+            {
+                if (!anim.enabled || !anim.gameObject.activeInHierarchy) continue;
+                anim.StartCoroutine(anim.PlayEntrance());
+            }
+        };
     }
 }
