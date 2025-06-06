@@ -11,8 +11,8 @@ public class PlayerDataManager : NetworkBehaviour
 
     private NetworkVariable<PlayerDataDictionary> syncedPlayerData = new(writePerm: NetworkVariableWritePermission.Server);
 
-    //public static event Action<float, float> OnLocalHealthChanged;
-    //public static event Action<float, float> OnLocalShieldChanged;
+    public static event Action<float, float> OnLocalHealthChanged;
+    public static event Action<float, float> OnLocalShieldChanged;
 
     public static event Action<ulong, float, float> OnAnyHealthChanged;
     public static event Action<ulong, float, float> OnAnyShieldChanged;
@@ -92,12 +92,12 @@ public class PlayerDataManager : NetworkBehaviour
                 OnAnyShieldChanged?.Invoke(playerId, newShield, maxShield);
             }
 
-            // Optionally: if this is the local player, raise the local-only versions too
-            //if (playerId == NetworkManager.Singleton.LocalClientId)
-            //{
-            //    OnLocalHealthChanged?.Invoke(newHealth, maxHealth);
-            //    OnLocalShieldChanged?.Invoke(newShield, maxShield);
-            //}
+            //Optionally: if this is the local player, raise the local - only versions too
+            if (playerId == NetworkManager.Singleton.LocalClientId)
+            {
+                OnLocalHealthChanged?.Invoke(newHealth, maxHealth);
+                OnLocalShieldChanged?.Invoke(newShield, maxShield);
+            }
         }
     }
 
@@ -114,10 +114,9 @@ public class PlayerDataManager : NetworkBehaviour
 
     public override void OnNetworkDespawn()
     {
-        if (IsClient||IsHost)
-        {
-            syncedPlayerData.OnValueChanged -= OnSyncedPlayerDataChanged;
-        }
+
+        syncedPlayerData.OnValueChanged -= OnSyncedPlayerDataChanged;
+
 
         if (IsServer)
         {

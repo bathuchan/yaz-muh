@@ -19,7 +19,7 @@ public class PlayerNetwork : NetworkBehaviour
 
     private NetworkObject netObj;
 
-    private UIManager ui;
+    private WorldUIManager ui;
 
     [HideInInspector] public Stopwatch inputDeltaTime { get; private set; }
     [HideInInspector] public Stopwatch tickDeltaTime { get; private set; }
@@ -43,7 +43,7 @@ public class PlayerNetwork : NetworkBehaviour
             ApplyMaterial(newValue);
         };
 
-        ui = GetComponentInChildren<UIManager>();
+        ui = GetComponentInChildren<WorldUIManager>();
         if (ui != null)
         {
             ui.OwnerNetId = OwnerClientId;
@@ -56,7 +56,7 @@ public class PlayerNetwork : NetworkBehaviour
         playerControls.Enable();
 
         // Sync all player health/shield info when a new client joins
-        if (IsClient)
+        if (IsClient||IsHost)
         {
             PlayerDataManager.Instance?.RequestFullPlayerDataSyncServerRpc();
         }
