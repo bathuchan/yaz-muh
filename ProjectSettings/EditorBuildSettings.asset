@@ -6,22 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/EnesAssets/Scenes/LoadingScene.unity
-    guid: 38a28bd9c4f4f4e4fa9e7c8ba89017b4
-  - enabled: 1
-    path: Assets/EnesAssets/Scenes/LoginScene.unity
-    guid: 71d876cc33a0a41689a72f35853e3599
-  - enabled: 1
-    path: Assets/EnesAssets/Scenes/MainMenuScene.unity
-    guid: 0d6ea4eb4694a43aea5c2050e8a88b9c
-  - enabled: 1
-    path: Assets/EnesAssets/Scenes/RegisterScene.unity
-    guid: 3aafa43f0f0b947b48268d2ea6916d01
-  - enabled: 1
     path: Assets/BatuAssets/Scenes/BatuTest.unity
     guid: 99c9720ab356a0642a771bea13969a05
-  m_configObjects:
-    com.unity.addressableassets: {fileID: 11400000, guid: daa4e353a11904b3682972854d8b10af,
-      type: 2}
-    com.unity.localization.settings: {fileID: 11400000, guid: 395167a781d934085b0236d8cb919dc3,
-      type: 2}
+  m_configObjects: {}
