@@ -1,0 +1,85 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: LocalizationTextTable Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: LocalizationTextTable
+  m_TableCollectionNameGuidString: c2331bb2b280a4a99bb87442fdf762de
+  m_Entries:
+  - m_Id: 13538156544
+    m_Key: Language
+    m_Metadata:
+      m_Items: []
+  - m_Id: 808660754432
+    m_Key: Ok
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1511445749760
+    m_Key: Welcome
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1585726873600
+    m_Key: Signin
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1808587022336
+    m_Key: Signup
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1944381808640
+    m_Key: LanguageCode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3121869742080
+    m_Key: Loading
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3529413484544
+    m_Key: Signin_Title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3600796344320
+    m_Key: Signup_Title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3658639990784
+    m_Key: Username
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3704311767040
+    m_Key: Password
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3734078742528
+    m_Key: Email
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4483378569216
+    m_Key: Incorrect Information
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5192610209792
+    m_Key: Login Incorrect Information Text
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 2012557552246063128
+  references:
+    version: 2
+    RefIds:
+    - rid: 2012557552246063128
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables,
+        asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1745186134013

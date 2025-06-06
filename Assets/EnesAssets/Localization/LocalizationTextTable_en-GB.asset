@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: LocalizationTextTable_en-GB
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: en-GB
+  m_SharedData: {fileID: 11400000, guid: c2331bb2b280a4a99bb87442fdf762de, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 13538156544
+    m_Localized: Language
+    m_Metadata:
+      m_Items: []
+  - m_Id: 808660754432
+    m_Localized: Ok
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1511445749760
+    m_Localized: Welcome!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1585726873600
+    m_Localized: Sign In
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1808587022336
+    m_Localized: Sign Up
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1944381808640
+    m_Localized: EN
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3121869742080
+    m_Localized: Loading...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3529413484544
+    m_Localized: Sign In
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3600796344320
+    m_Localized: Sign Up
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3658639990784
+    m_Localized: Username
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3704311767040
+    m_Localized: Password
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3734078742528
+    m_Localized: Email
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4483378569216
+    m_Localized: Incorrect Information!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5192610209792
+    m_Localized: Make sure you enter your information correctly!
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []
