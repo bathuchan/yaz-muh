@@ -22,7 +22,7 @@ Oyunda farklı arena tasarımları, dinamik çevresel etkileşimler ve özel etk
 ## 🛠️ Kullanılan Teknolojiler
 - **Unity 2022.3** (Oyun motoru)
 - **C#** (Kodlama dili)
-- **Canva** (UI/UX tasarımı)
+- **Figma** (UI/UX tasarımı)
 - **GitHub** (Sürüm kontrol)
 - **DOTween** (Animasyonlar)
 
