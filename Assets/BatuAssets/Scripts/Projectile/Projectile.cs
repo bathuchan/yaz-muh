@@ -1,7 +1,6 @@
 using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.LowLevel;
+
 
 public class Projectile : MonoBehaviour
 {
@@ -18,8 +17,8 @@ public class Projectile : MonoBehaviour
     [HideInInspector] public bool visualizeMesh = false; // Set to true for client-side visuals
     private bool isServerProjectile = false;
     private ProjectileVFXHandler vfxHandler;
-    private bool enableVfx=true;
-    
+    private bool enableVfx = true;
+    private PlayerData casterData;
 
     private Vector3[] pathPoints;
     private int currentPathIndex = 0;
@@ -32,7 +31,7 @@ public class Projectile : MonoBehaviour
 
     private void Awake()
     {
-       // networkObject = GetComponent<NetworkObject>();
+        // networkObject = GetComponent<NetworkObject>();
         rb = GetComponent<Rigidbody>();
         meshRenderer = GetComponent<MeshRenderer>();
         vfxHandler = GetComponentInChildren<ProjectileVFXHandler>();
@@ -40,10 +39,11 @@ public class Projectile : MonoBehaviour
 
 
 
-    public void Initialize(bool isServerProjectile,SpawnInfo spawnInfo, Collider shooterCollider, PlayerNetwork playerNetwork, PlayerState playerState, /*ulong networkId, */bool visualizeMesh,bool enableVfx)
+    public void Initialize(bool isServerProjectile, SpawnInfo spawnInfo, Collider shooterCollider, PlayerNetwork playerNetwork, PlayerState playerState, /*ulong networkId, */bool visualizeMesh, bool enableVfx)
     {
         this.isServerProjectile = isServerProjectile;
         this.spawnInfo = spawnInfo;
+        PlayerDataManager.Instance.TryGetPlayerData(spawnInfo.ownerNetID, out this.casterData);
         this.spawnPoint = spawnInfo.spawnPoint;
         this.projectileData = ProjectileDatabase.Instance.GetProjectileData(spawnInfo.projectileId);
         this.playerNetwork = playerNetwork;
@@ -57,7 +57,7 @@ public class Projectile : MonoBehaviour
 
         SetUpProjectile();
 
-        
+
 
         Collider projectileCollider = GetComponent<Collider>();
         if (projectileCollider != null && shooterCollider != null)
@@ -81,7 +81,8 @@ public class Projectile : MonoBehaviour
                 {
                     vfxHandler.ImpactVFX();
 
-                }else if (vfxHandler.despawnVfxs.Length != 0) 
+                }
+                else if (vfxHandler.despawnVfxs.Length != 0)
                 {
                     vfxHandler.DespawnVFX();
                 }
@@ -114,7 +115,7 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    private void SetUpProjectile() 
+    private void SetUpProjectile()
     {
         transform.SetParent(ContainerController.Instance.GetContainer("Projectile"));
 
@@ -127,17 +128,17 @@ public class Projectile : MonoBehaviour
 
                 meshRenderer.material.color = Color.white;
                 meshRenderer.material.DisableKeyword("_EMISSION");
-               
+
 
             }
         }
         else
         {
             meshRenderer.enabled = false;
-            
+
         }
 
-        
+
 
         if (projectileData.trajectoryStyle != null && projectileData.trajectoryStyle is CircularTrajectory ? false : true)
         {
@@ -162,15 +163,15 @@ public class Projectile : MonoBehaviour
         {
             vfxHandler.InitializeVFX();
         }
-        else 
+        else
         {
             vfxHandler = null;
         }
-        
+
 
     }
 
-
+    NetworkObject otherNetObj;
     private void OnTriggerEnter(Collider other)
     {
         if (!isServerProjectile)
@@ -184,20 +185,104 @@ public class Projectile : MonoBehaviour
             Destroy(gameObject); // Destroy locally for visual projectiles
             return;
         }
-        else if (isServerProjectile)
+        else if (isServerProjectile&& NetworkManager.Singleton.IsServer)
         {
-            if (other.CompareTag("Player"))
+            if (other.CompareTag("Player") && other.transform.parent.TryGetComponent<NetworkObject>(out otherNetObj))
             {
-                Debug.Log($"[SERVER] Projectile hit {other.name}");
-                // Apply damage/effects here if needed
+
+                if (PlayerDataManager.Instance.TryGetPlayerData(otherNetObj.OwnerClientId, out PlayerData hitPlayer))
+                {
+                    float updatedHealth = HealthAfterDamage(casterData, hitPlayer);
+
+                    // Server sets the new health value in the synced data
+                    PlayerDataManager.Instance.SetStatValue(otherNetObj.OwnerClientId, PlayerData.PlayerStatType.CurrentHealth, updatedHealth);
+
+                    PlayerDataManager.Instance.TryGetStatValue(otherNetObj.OwnerClientId, PlayerData.PlayerStatType.CurrentShield, out float updatedShield);
+
+                    Debug.Log($"[SERVER] {other.name} hit! New health: {updatedHealth}, New shield:{updatedShield}");
+                }
+
+
+                else
+                {
+                    Debug.Log($"[SERVER] couldn't find {other.name} playerdata!!!");
+
+                }
+
+
             }
-          
+
             Destroy(gameObject);
             return;
-          
+
         }
     }
 
+    private float DamageAmount(PlayerData casterPlayerData, PlayerData hitPlayerData)
+    {
+        float baseDamage = projectileData.baseDamage;
+        float baseCritChance = projectileData.baseCriticalChange;
+
+
+        PlayerDataManager.Instance.TryGetStatValue(otherNetObj.OwnerClientId, PlayerData.PlayerStatType.DamageMultiplier, out float damageMultiplier);
+        PlayerDataManager.Instance.TryGetStatValue(otherNetObj.OwnerClientId, PlayerData.PlayerStatType.CriticalChance, out float critChance);
+        PlayerDataManager.Instance.TryGetStatValue(otherNetObj.OwnerClientId, PlayerData.PlayerStatType.CriticalMultiplier, out float critMultiplier);
+        
+        //float damageMultiplier = casterPlayerData.GetStat(PlayerData.PlayerStatType.DamageMultiplier);
+        //float critChance = casterPlayerData.GetStat(PlayerData.PlayerStatType.CriticalChance);
+        //float critMultiplier = casterPlayerData.GetStat(PlayerData.PlayerStatType.CriticalMultiplier);
+
+        // Calculate if this hit is critical
+        bool isCritical = Random.value < (baseCritChance + critChance);
+
+        float totalDamage = baseDamage * (damageMultiplier);
+        if (isCritical)
+        {
+            totalDamage *= (critMultiplier);
+            Debug.Log("[DAMAGE] Critical Hit!");
+        }
+
+        return totalDamage;
+    }
+
+    private float HealthAfterDamage(PlayerData casterPlayerData, PlayerData hitPlayerData)
+    {
+        PlayerDataManager.Instance.TryGetStatValue(otherNetObj.OwnerClientId, PlayerData.PlayerStatType.CurrentHealth, out float currentHealth);
+        PlayerDataManager.Instance.TryGetStatValue(otherNetObj.OwnerClientId, PlayerData.PlayerStatType.CurrentShield, out float shield);
+        PlayerDataManager.Instance.TryGetStatValue(otherNetObj.OwnerClientId, PlayerData.PlayerStatType.ShieldMultiplier, out float shieldMultiplier);
+
+        //float currentHealth = hitPlayerData.GetStat(PlayerData.PlayerStatType.CurrentHealth);
+        //float shield = hitPlayerData.GetStat(PlayerData.PlayerStatType.Shield);
+        //float shieldMultiplier = hitPlayerData.GetStat(PlayerData.PlayerStatType.ShieldMultiplier);
+
+
+        float damage = DamageAmount(casterPlayerData, hitPlayerData);
+
+        // Apply shield first
+        if (shield > 0)
+        {
+            float effectiveShield = shield * (1f/* + shieldMultiplier*/);
+            if (damage <= effectiveShield)
+            {
+                float newShield = effectiveShield - damage;
+
+                PlayerDataManager.Instance.SetStatValue(otherNetObj.OwnerClientId, PlayerData.PlayerStatType.CurrentShield, newShield);
+
+                //hitPlayerData.SetStat(PlayerData.PlayerStatType.Shield, newShield);
+                return currentHealth; // Health remains unchanged
+            }
+            else
+            {
+                damage -= effectiveShield;
+                PlayerDataManager.Instance.SetStatValue(otherNetObj.OwnerClientId, PlayerData.PlayerStatType.CurrentShield, 0f);
+
+                //hitPlayerData.SetStat(PlayerData.PlayerStatType.Shield, 0f);
+            }
+        }
+
+        float newHealth = Mathf.Max(0f, currentHealth - damage);
+        return newHealth;
+    }
 
 
 }

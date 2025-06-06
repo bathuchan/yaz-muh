@@ -15,20 +15,25 @@ public class PlayerNetwork : NetworkBehaviour
 
     public Rigidbody playerRb;
 
+    private PlayerData playerData;
+
+    private NetworkObject netObj;
+
+    private UIManager ui;
+
     [HideInInspector] public Stopwatch inputDeltaTime { get; private set; }
     [HideInInspector] public Stopwatch tickDeltaTime { get; private set; }
 
     [SerializeField] private Renderer[] modelRenderer;
     private NetworkVariable<int> materialIndex = new NetworkVariable<int>(-1);
+
+
     public override void OnNetworkSpawn()
     {
-
         if (IsServer)
         {
             int index = PlayerColorManager.Instance.AssignUniqueMaterialIndex();
             materialIndex.Value = index;
-
-           // SetPlayerContainerParent();
         }
 
         ApplyMaterial(materialIndex.Value);
@@ -38,18 +43,31 @@ public class PlayerNetwork : NetworkBehaviour
             ApplyMaterial(newValue);
         };
 
+        ui = GetComponentInChildren<UIManager>();
+        if (ui != null)
+        {
+            ui.OwnerNetId = OwnerClientId;
+        }
+
         if (!IsOwner) return;
-        gameObject.name=gameObject.name+" (Owner)";
+
+        gameObject.name += " (Owner)";
         playerState = GetComponent<PlayerState>();
         playerControls.Enable();
 
-
+        // Sync all player health/shield info when a new client joins
+        if (IsClient)
+        {
+            PlayerDataManager.Instance?.RequestFullPlayerDataSyncServerRpc();
+        }
     }
+
 
     private void Awake()
     {
 
         playerControls = new PlayerControls();
+        netObj = GetComponent<NetworkObject>();
 
 
         playerRb = GetComponent<Rigidbody>();
