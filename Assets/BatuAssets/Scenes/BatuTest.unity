@@ -1637,6 +1637,9 @@ MonoBehaviour:
   serverBtn: {fileID: 863625049}
   hostBtn: {fileID: 1902779233}
   clientBtn: {fileID: 1965547836}
+  networkManager: {fileID: 1566974560}
+  ipAdress: 100.125.153.75
+  portAdress: 7777
 --- !u!1 &735350167
 GameObject:
   m_ObjectHideFlags: 0
@@ -4691,7 +4694,7 @@ MonoBehaviour:
   m_MaxConnectAttempts: 60
   m_DisconnectTimeoutMS: 30000
   ConnectionData:
-    Address: 100.125.153.75
+    Address: 127.0.0.1
     Port: 7777
     ServerListenAddress: 0.0.0.0
   DebugSimulator:
