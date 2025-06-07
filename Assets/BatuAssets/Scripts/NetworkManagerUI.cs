@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine;
@@ -12,35 +9,95 @@ public class NetworkManagerUI : MonoBehaviour
     [SerializeField] private Button hostBtn;
     [SerializeField] private Button clientBtn;
 
-    //public string serverIp = "192.168.x.x";
+    [SerializeField] NetworkManager networkManager;
 
-    public int port;
-    public string address;
+    [SerializeField] private string ipAdress="127.0.0.1";
+    [SerializeField] private string portAdress="7777";
 
+    [SerializeField] private BuildType currentBuildType;
+    [SerializeField] private GameObject uiButtonsParent;
+   enum BuildType 
+    {
+        Server,
+        Host, 
+        Client,
+        Null
+    }
 
+    UnityTransport unityTransport;
     private void Awake()
     {
-        string[] args = Environment.GetCommandLineArgs();
+        //UnityTransport unityTransport = NetworkManager.Singleton.NetworkConfig.NetworkTransport as UnityTransport;
+         unityTransport = networkManager.NetworkConfig.NetworkTransport as UnityTransport;
 
         serverBtn.onClick.AddListener(() =>
         {
-            NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData("127.0.0.1", ushort.Parse(args[0]));
+            ApplyConnectionSettings(unityTransport);
             NetworkManager.Singleton.StartServer();
-
         });
+
         hostBtn.onClick.AddListener(() =>
         {
+            ApplyConnectionSettings(unityTransport);
             NetworkManager.Singleton.StartHost();
-
         });
+
         clientBtn.onClick.AddListener(() =>
         {
-
+            ApplyConnectionSettings(unityTransport);
             NetworkManager.Singleton.StartClient();
-
-
         });
+    }
+
+    private void Start()
+    {
+        switch (currentBuildType)
+        {
+            case BuildType.Client:
+                // code block
+                ApplyConnectionSettings(unityTransport);
+                NetworkManager.Singleton.StartClient();
+                uiButtonsParent.SetActive(false);
+
+
+
+                break;
+            case BuildType.Server:
+                // code block
+                ApplyConnectionSettings(unityTransport);
+                NetworkManager.Singleton.StartServer();
+                uiButtonsParent.SetActive(false);
+
+                break;
+
+            case BuildType.Host:
+                ApplyConnectionSettings(unityTransport);
+                NetworkManager.Singleton.StartHost();
+                uiButtonsParent.SetActive(false);
+
+                break;
+            default:
+                Debug.LogWarning("Build type not declared!");
+                uiButtonsParent.SetActive(true);
+
+                break;
+        }
 
     }
 
+    private void ApplyConnectionSettings(UnityTransport transport)
+    {
+        string ip = ipAdress;
+        ushort port = 7777;
+
+        // Safe port parsing
+        if (!ushort.TryParse(portAdress, out port))
+        {
+            Debug.LogWarning("Invalid port input. Falling back to default port 7777.");
+            port = 7777;
+        }
+
+        transport.SetConnectionData(ip, port);
+        Debug.Log($"Connection set to {ip}:{port}");
+    }
 }
