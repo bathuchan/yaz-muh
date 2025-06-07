@@ -3,6 +3,9 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using System.Text.RegularExpressions;
 using System.Collections;
+using LiteNetLib.Utils;
+
+
 
 public class RegisterManager : MonoBehaviour
 {
@@ -21,6 +24,8 @@ public class RegisterManager : MonoBehaviour
 
     [Header("Başarılı Kayıttan Sonra Açılacak Sahne")]
     public string successSceneName = "MainMenuScene";
+
+    public bool pendingFlag = false;
 
     public void AttemptRegister()
     {
@@ -56,8 +61,29 @@ public class RegisterManager : MonoBehaviour
             return;
         }
 
+
+        if (GeneralServerComm.Instance != null)
+        {
+            NetDataWriter writer = new NetDataWriter();
+            writer.Put((int)CMD_STATUS.CMD_REGISTER);
+            writer.Put(username);
+            writer.Put(password);
+            writer.Put(email);
+
+            GeneralServerComm.Instance.dataFlag = false;
+            GeneralServerComm.Instance.sendToPeer(writer);
+            pendingFlag = true;
+
+        }
+        else
+        {
+            Debug.Log("SERVER CONNECTION IS NOT CREATED.");
+        }
+
+
+
         // ✅ Tüm kontroller geçti → başarı paneli göster, sahneye yönlendir
-        ShowSuccessAndRedirect();
+        //ShowSuccessAndRedirect();
     }
 
     private void ShowWarning(string message)
@@ -92,5 +118,23 @@ public class RegisterManager : MonoBehaviour
     {
         string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
         return Regex.IsMatch(email, pattern);
+    }
+
+    public void Update()
+    {
+        if (pendingFlag && GeneralServerComm.Instance.dataFlag)
+        {
+            pendingFlag = false;
+            GeneralServerComm.Instance.dataFlag = false;
+            int ret = GeneralServerComm.Instance.return_code;
+            if (ret == (int)CMD_STATUS.RET_SUCCESSFUL)
+            {
+                ShowSuccessAndRedirect();
+            }
+            else
+            {
+                Debug.Log($"REGISTER FAILED, RETURN CODE: {ret}");
+            }
+        }
     }
 }
