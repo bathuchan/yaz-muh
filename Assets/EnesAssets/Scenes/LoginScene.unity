@@ -3197,7 +3197,7 @@ MonoBehaviour:
   usernameInput: {fileID: 355421968}
   passwordInput: {fileID: 1588674512}
   warningPanel: {fileID: 1835349489}
-  successSceneName: LoadingScene
+  successSceneName: Dashboard
 --- !u!4 &1386761754
 Transform:
   m_ObjectHideFlags: 0

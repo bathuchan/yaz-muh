@@ -20,6 +20,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/BatuAssets/Scenes/BatuTest.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/EnesAssets/Scenes/Dashboard.unity
+    guid: 450e729b8fcac4366b5360a6acf5d10b
+  - enabled: 1
+    path: Assets/EnesAssets/Scenes/PlayMenu.unity
+    guid: b2e17fdd2072c405ca67b90ecc35744f
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: daa4e353a11904b3682972854d8b10af,
       type: 2}

@@ -13,7 +13,7 @@ public class LoginManager : MonoBehaviour
     public GameObject warningPanel;
 
     [Header("Doğru Girişten Sonra Açılacak Sahne")]
-    public string successSceneName = "MainMenuScene";
+    public string successSceneName = "Dashboard";
 
     private string validUsername = "admin";
     private string validPassword = "admin123";

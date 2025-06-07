@@ -16,27 +16,7 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: 3d81588b3c0ba475ab0232bc74584b6f
-  m_SerializeEntries:
-  - m_GUID: 11b0fcd23efaf46c59469c24ffa8ebc9
-    m_Address: Assets/EnesAssets/Localization/LocalizationTextTable_tr-TR.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 13578671070194d23abc6d87aeebf326
-    m_Address: Assets/EnesAssets/Localization/LocalizationTextTable_ru-RU.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 895f4110e15eb4656abac392a963270c
-    m_Address: Assets/EnesAssets/Localization/LocalizationTextTable_en-GB.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c2331bb2b280a4a99bb87442fdf762de
-    m_Address: Assets/EnesAssets/Localization/LocalizationTextTable Shared Data.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 53dfc82e7628c4b67884b6a89307b102, type: 2}
   m_SchemaSet:
