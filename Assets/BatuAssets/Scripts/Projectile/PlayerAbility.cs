@@ -16,11 +16,13 @@ public class PlayerAbility : NetworkBehaviour
     public AbilityJoystick[] abilityJoysticks;
 
     public ProjectileData currentProjectileData;
+    private NetworkObject netObj;
     private void Awake()
     {
         abilityJoysticks = GameObject.FindObjectsOfType<AbilityJoystick>();
         playerState = GetComponent<PlayerState>();
         playerLook = GetComponent<PlayerLook>();
+        netObj = GetComponent<NetworkObject>();
         //trajectoryLine= GetComponent<LineRenderer>();
     }
     private void Start()
@@ -80,6 +82,8 @@ public class PlayerAbility : NetworkBehaviour
 
         SpawnInfo spawnInfo = new SpawnInfo
         {
+            ownerNetID=netObj.OwnerClientId,
+
             projectileId = this.projectileId,
 
             direction = playerLook.playerModel.transform.forward,
@@ -117,7 +121,7 @@ public class PlayerAbility : NetworkBehaviour
 
             //change to each bool value for testing purposes for visual testings
           
-            projectile.Initialize( false ,spawnInfo, shooterCollider, playerNetwork, playerState,/* networkId,*/ true,true);
+            projectile.Initialize( true ,spawnInfo, shooterCollider, playerNetwork, playerState, true,false);
 
             // Tell clients to spawn visual projectile
             SpawnVisualProjectileClientRpc(spawnInfo);
@@ -176,7 +180,7 @@ public class PlayerAbility : NetworkBehaviour
           
            
             
-            projectile.Initialize(false,spawnInfo, shooterCollider, playerNetwork, playerState,/* networkId,*/ true , true);
+            projectile.Initialize(false,spawnInfo, shooterCollider, playerNetwork, playerState, true , true);
            
         }
 

@@ -18,23 +18,27 @@ public class ProjectileData : ScriptableObject
     public TrajectoryStyle trajectoryStyle;
 
 }
-public enum ElementType { NONE,Fire, Water, Nature }
+public enum ElementType { NONE, Fire, Water, Nature }
 
-public struct SpawnInfo: INetworkSerializable
+public struct SpawnInfo : INetworkSerializable
 {
+    public ulong ownerNetID;
+
     public int projectileId;
-    
+
     public Vector3 direction;
 
     public Vector3 spawnPoint;
 
 
-    
+
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
+        serializer.SerializeValue(ref ownerNetID);
+
         serializer.SerializeValue(ref projectileId);
-        
+
         serializer.SerializeValue(ref direction);
 
         serializer.SerializeValue(ref spawnPoint);
