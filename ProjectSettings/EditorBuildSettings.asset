@@ -5,16 +5,16 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/EnesAssets/Scenes/LoadingScene.unity
     guid: 38a28bd9c4f4f4e4fa9e7c8ba89017b4
-  - enabled: 1
+  - enabled: 0
     path: Assets/EnesAssets/Scenes/LoginScene.unity
     guid: 71d876cc33a0a41689a72f35853e3599
-  - enabled: 1
+  - enabled: 0
     path: Assets/EnesAssets/Scenes/MainMenuScene.unity
     guid: 0d6ea4eb4694a43aea5c2050e8a88b9c
-  - enabled: 1
+  - enabled: 0
     path: Assets/EnesAssets/Scenes/RegisterScene.unity
     guid: 3aafa43f0f0b947b48268d2ea6916d01
   - enabled: 1
