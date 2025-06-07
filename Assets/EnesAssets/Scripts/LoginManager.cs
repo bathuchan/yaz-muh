@@ -14,10 +14,8 @@ public class LoginManager : MonoBehaviour
     public GameObject warningPanel;
 
     [Header("Doğru Girişten Sonra Açılacak Sahne")]
-    public string successSceneName = "Dashboard";
+    public string successSceneName = "Dashboard";   
 
-    private string validUsername = "admin";
-    private string validPassword = "admin123";
 
     public bool pendingFlag = false;
 
@@ -55,6 +53,7 @@ public class LoginManager : MonoBehaviour
             int ret = GeneralServerComm.Instance.return_code;
             if (ret == (int)CMD_STATUS.RET_SUCCESSFUL)
             {
+                PlayerInfo.Instance.username = usernameInput.text.Trim();
                 // Başarılı giriş → sahneye geç
                 SceneManager.LoadScene(successSceneName);
             }

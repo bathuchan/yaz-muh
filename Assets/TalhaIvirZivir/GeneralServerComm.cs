@@ -16,7 +16,11 @@ public enum CMD_STATUS
     RET_SUCCESSFUL,
     CMD_REGISTER,
     CMD_LOGIN,
-    RET_FAIL
+    RET_FAIL,
+
+    CMD_JOIN_QUEUE,
+    CMD_LEAVE_QUEUE,
+    INFO_JOIN_GAME
 }
 
 
@@ -29,6 +33,8 @@ public class GeneralServerComm : MonoBehaviour, INetEventListener
     public bool dataFlag = false;
 
     public int return_code = 0;
+
+    public NetDataReader data_reader;
 
     public NetManager client;
     public void OnConnectionRequest(ConnectionRequest request)
@@ -49,7 +55,7 @@ public class GeneralServerComm : MonoBehaviour, INetEventListener
     {
         Debug.Log("Data recieved");
         int ret = reader.GetInt();
-
+        data_reader = reader;
 
 
 
@@ -116,6 +122,7 @@ public class GeneralServerComm : MonoBehaviour, INetEventListener
 
     public void sendToPeer(NetDataWriter writer)
     {
+        Debug.Log("Data sent");
         server.Send(writer, DeliveryMethod.ReliableOrdered);
     }
 }

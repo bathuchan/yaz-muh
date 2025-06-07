@@ -132,6 +132,8 @@ GameObject:
   m_Component:
   - component: {fileID: 8227803}
   - component: {fileID: 8227802}
+  - component: {fileID: 8227804}
+  - component: {fileID: 8227805}
   m_Layer: 0
   m_Name: NetworkGeneral
   m_TagString: Untagged
@@ -168,6 +170,33 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8227804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8227801}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 875479298dc28eb439b5bda4778db56a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  username: 
+--- !u!114 &8227805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8227801}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a28e29d1fbdedf144a6cdc814ee3518a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  queueResponse: 0
+  queueWait: 0
 --- !u!1 &9079182
 GameObject:
   m_ObjectHideFlags: 0

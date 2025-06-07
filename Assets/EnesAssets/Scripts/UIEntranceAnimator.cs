@@ -6,6 +6,7 @@ public class UIEntranceAnimator : MonoBehaviour
 {
     public enum Direction { Left, Right, Top, Bottom }
 
+
     [Header("Giriş Ayarları")]
     public Direction fromDirection = Direction.Left;
     public float distance = 500f;
@@ -27,12 +28,14 @@ public class UIEntranceAnimator : MonoBehaviour
         targetPosition = transform.localPosition;
 
         layoutElement = GetComponent<LayoutElement>();
+        
         if (layoutElement != null)
             layoutElement.ignoreLayout = true;
     }
 
     void Start()
     {
+        
         if (playOnStart)
         {
             // Play'i sahneye geçiş sonrası garantiye al
