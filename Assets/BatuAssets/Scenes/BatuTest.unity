@@ -1674,9 +1674,9 @@ MonoBehaviour:
   hostBtn: {fileID: 1902779233}
   clientBtn: {fileID: 1965547836}
   networkManager: {fileID: 1566974560}
-  ipAdress: 100.125.153.75
+  ipAdress: 127.0.0.1
   portAdress: 7777
-  currentBuildType: 0
+  currentBuildType: 2
   uiButtonsParent: {fileID: 206350597}
 --- !u!1 &735350167
 GameObject:
