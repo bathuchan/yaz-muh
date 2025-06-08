@@ -66,6 +66,26 @@ MonoBehaviour:
     m_Localized: Dil
     m_Metadata:
       m_Items: []
+  - m_Id: 272084604280832
+    m_Localized: Oyna
+    m_Metadata:
+      m_Items: []
+  - m_Id: 272130770984960
+    m_Localized: Envanter
+    m_Metadata:
+      m_Items: []
+  - m_Id: 272178409889792
+    m_Localized: "S\u0131ralama"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 282783573336064
+    m_Localized: "Ayr\u0131l"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 283045344043008
+    m_Localized: "Oyuncu Aran\u0131yor"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []
