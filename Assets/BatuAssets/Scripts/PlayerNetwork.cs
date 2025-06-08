@@ -58,7 +58,7 @@ public class PlayerNetwork : NetworkBehaviour
         // Sync all player health/shield info when a new client joins
         if (IsClient || IsHost)
         {
-            RegisterPlayerNameServerRpc(PlayerInfo.Instance.username,default);
+            if(PlayerInfo.Instance!=null) RegisterPlayerNameServerRpc(PlayerInfo.Instance.username,default);
             PlayerDataManager.Instance?.RequestFullPlayerDataSyncServerRpc();
             
         }

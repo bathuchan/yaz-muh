@@ -20,16 +20,16 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/BatuAssets/Scenes/BatuTest.unity
     guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 1
+  - enabled: 0
     path: Assets/EnesAssets/Scenes/Dashboard.unity
     guid: 450e729b8fcac4366b5360a6acf5d10b
-  - enabled: 1
+  - enabled: 0
     path: Assets/EnesAssets/Scenes/PlayMenu.unity
     guid: b2e17fdd2072c405ca67b90ecc35744f
-  - enabled: 1
+  - enabled: 0
     path: Assets/EnesAssets/Scenes/RankScene.unity
     guid: db0d49da5e1a14747a8b73ee4209ccc2
-  - enabled: 1
+  - enabled: 0
     path: Assets/EnesAssets/Scenes/InventoryScene.unity
     guid: 9dc34f673b4314b0793a677fd092b2fc
   m_configObjects:

@@ -5060,7 +5060,7 @@ MonoBehaviour:
   networkManager: {fileID: 1566974560}
   ipAdress: 100.125.153.75
   portAdress: 7777
-  currentBuildType: 2
+  currentBuildType: 0
   uiButtonsParent: {fileID: 206350597}
 --- !u!1 &1665095763
 GameObject:
