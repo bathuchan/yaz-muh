@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5d17a21594effb4e9591490b009e7aa, type: 3}
   m_Name: Localization-String-Tables-Russian (Russia) (ru-RU)_BundledAssetGroupSchema
   m_EditorClassIdentifier: 
-  m_Group: {fileID: 11400000, guid: c8c70300736986048b224e8f768497e0, type: 2}
+  m_Group: {fileID: 11400000, guid: a4a5d53ef4a2042a5aa5c9e7231a7aea, type: 2}
   m_InternalBundleIdMode: 1
   m_Compression: 1
   m_IncludeAddressInCatalog: 1

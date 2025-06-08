@@ -5,6 +5,7 @@ using UnityEngine;
 public struct PlayerData : INetworkSerializable, IEquatable<PlayerData>
 {
     public ulong clientID;
+    public string userName;
     public float currentHealth;
     public float maxHealth;
     public float armor;
@@ -21,9 +22,10 @@ public struct PlayerData : INetworkSerializable, IEquatable<PlayerData>
 
 
     //Base Constructor 
-    public PlayerData(ulong clientID)
+    public PlayerData(ulong clientID,string userName)
     {
         this.clientID = clientID;
+        this.userName = userName;
         this.currentHealth = 100f; // Full health at start
         this.maxHealth = this.currentHealth;
         this.armor = 0;
@@ -57,6 +59,7 @@ public struct PlayerData : INetworkSerializable, IEquatable<PlayerData>
     /// <param name="omnivampMultiplier">Optional omnivamp (lifesteal) multiplier. Defaults to 0.</param>
     public PlayerData(
         ulong clientID,
+        string? username="player",
         float? currentHealth = null,
         float? maxHealth = null,
         float? armor = null,
@@ -70,7 +73,7 @@ public struct PlayerData : INetworkSerializable, IEquatable<PlayerData>
         float? movementSpeed = null,
         float? healingMultiplier = null,
         float? omnivampMultiplier = null)
-        : this(clientID)
+        : this(clientID,username)
     {
         if (currentHealth.HasValue) this.currentHealth = currentHealth.Value;
         if (maxHealth.HasValue) this.maxHealth = maxHealth.Value;
@@ -127,6 +130,13 @@ public struct PlayerData : INetworkSerializable, IEquatable<PlayerData>
         };
     }
 
+    public string GetName()
+    {
+        return userName;
+    }public void SetName(string userName)
+    {
+        this.userName = userName;
+    }
     public void SetStat(PlayerStatType stat, float value)
     {
         switch (stat)

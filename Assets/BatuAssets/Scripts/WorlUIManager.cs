@@ -9,7 +9,7 @@ public class WorldUIManager : NetworkBehaviour
     public ulong OwnerNetId;
     public Image healthBar;
     public Image shieldBar;
-
+    public TextMeshProUGUI playerName;
 
     [SerializeField]private Color damageColor = Color.red;
 
@@ -32,6 +32,7 @@ public class WorldUIManager : NetworkBehaviour
 
         PlayerDataManager.OnAnyHealthChanged += HandleHealthChanged;
         PlayerDataManager.OnAnyShieldChanged += HandleShieldChanged;
+        PlayerDataManager.OnAnyNameChanged += HandleNameChanged;
     }
 
 
@@ -39,6 +40,8 @@ public class WorldUIManager : NetworkBehaviour
     {
         PlayerDataManager.OnAnyHealthChanged -= HandleHealthChanged;
         PlayerDataManager.OnAnyShieldChanged -= HandleShieldChanged;
+        PlayerDataManager.OnAnyNameChanged -= HandleNameChanged;
+
     }
 
     private void HandleHealthChanged(ulong playerId, float current, float max)
@@ -64,6 +67,19 @@ public class WorldUIManager : NetworkBehaviour
             StopCoroutine(shieldRoutine);
 
         shieldRoutine = StartCoroutine(AnimateBar(shieldBar, targetFill, originalShieldColor));
+
+    }
+
+    private void HandleNameChanged(ulong playerId, string name)
+    {
+        if (playerId != OwnerNetId) return;
+
+        playerName.text = name;
+
+        //if (healthRoutine != null)
+        //    StopCoroutine(healthRoutine);
+
+        //healthRoutine = StartCoroutine(AnimateBar(healthBar, targetFill, originalHealthColor));
 
     }
 

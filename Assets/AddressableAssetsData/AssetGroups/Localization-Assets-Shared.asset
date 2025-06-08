@@ -15,10 +15,10 @@ MonoBehaviour:
   m_GroupName: Localization-Assets-Shared
   m_Data:
     m_SerializedData: []
-  m_GUID: 502da6c72f347c8418ba7fe37b893bf0
+  m_GUID: 20c31de37df8048ed8c4a5a3dbb5acb1
   m_SerializeEntries:
-  - m_GUID: c2331bb2b280a4a99bb87442fdf762de
-    m_Address: Assets/EnesAssets/Localization/LocalizationTextTable Shared Data.asset
+  - m_GUID: 87b39183162f04a149f29f35c67feb9b
+    m_Address: Assets/EnesAssets/Localization/LocalizationTextTableVIP Shared Data.asset
     m_ReadOnly: 1
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -26,5 +26,5 @@ MonoBehaviour:
   m_Settings: {fileID: 11400000, guid: 53dfc82e7628c4b67884b6a89307b102, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: fea41f6fdfbad5349b3e6d18b6459334, type: 2}
-    - {fileID: 11400000, guid: 37682148f21dcb948baac7cc15c61d6e, type: 2}
+    - {fileID: 11400000, guid: 838664d52c94c4504877b0bb98f8dbd7, type: 2}
+    - {fileID: 11400000, guid: 104ecb35aa8304b75ad4e51a5c1ab154, type: 2}

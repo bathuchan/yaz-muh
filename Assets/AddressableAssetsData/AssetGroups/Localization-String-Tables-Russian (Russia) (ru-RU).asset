@@ -15,10 +15,10 @@ MonoBehaviour:
   m_GroupName: Localization-String-Tables-Russian (Russia) (ru-RU)
   m_Data:
     m_SerializedData: []
-  m_GUID: b342d0538e0aa2643b622afa6e586343
+  m_GUID: 0ddc6d3a4d5614c10978a9f188c9fef5
   m_SerializeEntries:
-  - m_GUID: 13578671070194d23abc6d87aeebf326
-    m_Address: LocalizationTextTable_ru-RU
+  - m_GUID: b5ac1ebc893f542818074eedac4c8d9e
+    m_Address: UITextTable_ru-RU
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale-ru-RU
@@ -27,5 +27,5 @@ MonoBehaviour:
   m_Settings: {fileID: 11400000, guid: 53dfc82e7628c4b67884b6a89307b102, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: 96a424440f2780c41be4728727599e81, type: 2}
-    - {fileID: 11400000, guid: 9eab59a3650ad1b4c8116dfc3a422658, type: 2}
+    - {fileID: 11400000, guid: 7e5c6f3b1a9bd49c19b0d36b5c4db2e7, type: 2}
+    - {fileID: 11400000, guid: f575979433e654416beb9a2e981fbde6, type: 2}

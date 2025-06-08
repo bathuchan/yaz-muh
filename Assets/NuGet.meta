@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/AddressableAssetsData/Windows.meta
+guid: 9adeb6cc2e90e6d44a741e9cf0166340
+========
 guid: dbf134857daf7df428aa31cdd055514f
+>>>>>>>> e-localization:Assets/NuGet.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

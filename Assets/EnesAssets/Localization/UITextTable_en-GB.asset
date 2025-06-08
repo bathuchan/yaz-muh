@@ -1,0 +1,91 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: UITextTable_en-GB
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: en-GB
+  m_SharedData: {fileID: 11400000, guid: 87b39183162f04a149f29f35c67feb9b, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 3078903291904
+    m_Localized: Loading...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4609266409472
+    m_Localized: Sign In
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4790640697344
+    m_Localized: Username
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4871888560128
+    m_Localized: Password
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5023902720000
+    m_Localized: Sign Up
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5642956824576
+    m_Localized: Email
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5830349938688
+    m_Localized: Welcome
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6492706037760
+    m_Localized: EN
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7086485266432
+    m_Localized: Make sure you entered the correct info!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7821704814592
+    m_Localized: Incorrect Information
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7992610119680
+    m_Localized: Ok
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9263287099392
+    m_Localized: Language
+    m_Metadata:
+      m_Items: []
+  - m_Id: 282783573336064
+    m_Localized: Leave
+    m_Metadata:
+      m_Items: []
+  - m_Id: 283045344043008
+    m_Localized: Looking for Players
+    m_Metadata:
+      m_Items: []
+  - m_Id: 272084604280832
+    m_Localized: Play
+    m_Metadata:
+      m_Items: []
+  - m_Id: 272130770984960
+    m_Localized: Inventory
+    m_Metadata:
+      m_Items: []
+  - m_Id: 272178409889792
+    m_Localized: Rank List
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

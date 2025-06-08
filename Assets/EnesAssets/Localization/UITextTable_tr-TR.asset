@@ -1,0 +1,91 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: UITextTable_tr-TR
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: tr-TR
+  m_SharedData: {fileID: 11400000, guid: 87b39183162f04a149f29f35c67feb9b, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 3078903291904
+    m_Localized: "Y\xFCkleniyor..."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4609266409472
+    m_Localized: "Giri\u015F Yap"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4790640697344
+    m_Localized: "Kullan\u0131c\u0131 Ad\u0131"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4871888560128
+    m_Localized: "\u015Eifre"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5023902720000
+    m_Localized: "Kay\u0131t Ol"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5642956824576
+    m_Localized: E-Posta
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5830349938688
+    m_Localized: "Ho\u015F Geldiniz"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6492706037760
+    m_Localized: TR
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7086485266432
+    m_Localized: "Bilgilerinizi do\u011Fru girdi\u011Finizden emin olun!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7821704814592
+    m_Localized: "Hatal\u0131 Bilgiler!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7992610119680
+    m_Localized: Tamam
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9263287099392
+    m_Localized: Dil
+    m_Metadata:
+      m_Items: []
+  - m_Id: 272084604280832
+    m_Localized: Oyna
+    m_Metadata:
+      m_Items: []
+  - m_Id: 272130770984960
+    m_Localized: Envanter
+    m_Metadata:
+      m_Items: []
+  - m_Id: 272178409889792
+    m_Localized: "S\u0131ralama"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 282783573336064
+    m_Localized: "Ayr\u0131l"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 283045344043008
+    m_Localized: "Oyuncu Aran\u0131yor"
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

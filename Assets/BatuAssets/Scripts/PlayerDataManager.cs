@@ -1,21 +1,26 @@
 using System;
 using System.Collections.Generic;
 using Unity.Netcode;
+
 using UnityEngine;
 
 public class PlayerDataManager : NetworkBehaviour
 {
     public static PlayerDataManager Instance { get; private set; }
 
-    private Dictionary<ulong, PlayerData> playerDataDict = new();
+    public Dictionary<ulong, PlayerData> playerDataDict = new();
 
-    private NetworkVariable<PlayerDataDictionary> syncedPlayerData = new(writePerm: NetworkVariableWritePermission.Server);
+    public NetworkVariable<PlayerDataDictionary> syncedPlayerData = new(writePerm: NetworkVariableWritePermission.Server);
 
     public static event Action<float, float> OnLocalHealthChanged;
     public static event Action<float, float> OnLocalShieldChanged;
 
     public static event Action<ulong, float, float> OnAnyHealthChanged;
     public static event Action<ulong, float, float> OnAnyShieldChanged;
+
+    public static event Action<ulong, string> OnAnyNameChanged;
+
+    
 
 
     //private void Update()
@@ -61,8 +66,10 @@ public class PlayerDataManager : NetworkBehaviour
         {
             Debug.Log("PlayerDataManager spawned on server.");
             syncedPlayerData.Value = new PlayerDataDictionary { dict = new Dictionary<ulong, PlayerData>() };
-            NetworkManager.OnConnectionEvent += OnClientConnected;
+            //NetworkManager.OnConnectionEvent += OnClientConnected;
         }
+
+        
     }
 
     private void OnSyncedPlayerDataChanged(PlayerDataDictionary previous, PlayerDataDictionary current)
@@ -92,6 +99,14 @@ public class PlayerDataManager : NetworkBehaviour
                 OnAnyShieldChanged?.Invoke(playerId, newShield, maxShield);
             }
 
+            string oldName = oldData.userName;
+            string newName = newData.userName;
+
+            if (!string.Equals(oldName, newName))
+            {
+                OnAnyNameChanged?.Invoke(playerId, newName);
+            }
+
             //Optionally: if this is the local player, raise the local - only versions too
             if (playerId == NetworkManager.Singleton.LocalClientId)
             {
@@ -102,15 +117,15 @@ public class PlayerDataManager : NetworkBehaviour
     }
 
 
-    private void OnClientConnected(NetworkManager networkManager, ConnectionEventData connectionEventData)
-    {
-        if (!playerDataDict.ContainsKey(connectionEventData.ClientId))
-        {
-            Debug.Log($"Client {connectionEventData.ClientId} connected. Creating base player data.");
-            CreateBasePlayerData(connectionEventData.ClientId);
-        }
+    //private void OnClientConnected(NetworkManager networkManager, ConnectionEventData connectionEventData)
+    //{
+    //    if (!playerDataDict.ContainsKey(connectionEventData.ClientId))
+    //    {
+    //        Debug.Log($"Client {connectionEventData.ClientId} connected. Creating base player data.");
+    //        CreateBasePlayerData(connectionEventData.ClientId);
+    //    }
 
-    }
+    //}
 
     public override void OnNetworkDespawn()
     {
@@ -120,21 +135,22 @@ public class PlayerDataManager : NetworkBehaviour
 
         if (IsServer)
         {
-            NetworkManager.OnConnectionEvent -= OnClientConnected;
+            //NetworkManager.OnConnectionEvent -= OnClientConnected;
         }
+        
     }
 
 
-    public void CreateBasePlayerData(ulong netID)
-    {
-        if (!IsServer) return;
+    //public void CreateBasePlayerData(ulong netID)
+    //{
+    //    if (!IsServer) return;
 
-        var playerData = new PlayerData(netID);
-        playerDataDict[netID] = playerData;
-        syncedPlayerData.Value.dict[netID] = playerData;
+    //    var playerData = new PlayerData(netID,/*somehow add name here*/);
+    //    playerDataDict[netID] = playerData;
+    //    syncedPlayerData.Value.dict[netID] = playerData;
 
-        syncedPlayerData.SetDirty(true); // Force sync
-    }
+    //    syncedPlayerData.SetDirty(true); // Force sync
+    //}
 
     public void UpdatePlayerData(ulong netID, PlayerData newData)
     {
@@ -185,6 +201,20 @@ public class PlayerDataManager : NetworkBehaviour
         return syncedPlayerData.Value.dict.TryGetValue(netID, out data);
     }
 
+    public void SetPlayerName(ulong playerId, string name)
+    {
+        if (!playerDataDict.ContainsKey(playerId)) return;
+
+        playerDataDict[playerId].SetName(name);
+
+        syncedPlayerData.Value.dict[playerId] = playerDataDict[playerId];
+        syncedPlayerData.SetDirty(true);
+
+        OnAnyNameChanged?.Invoke(playerId, name);
+    }
+
+   
+
     [ServerRpc(RequireOwnership = false)]
     public void RequestFullPlayerDataSyncServerRpc(ServerRpcParams rpcParams = default)
     {
@@ -193,6 +223,9 @@ public class PlayerDataManager : NetworkBehaviour
         {
             ulong playerId = kvp.Key;
             PlayerData data = kvp.Value;
+
+            //data.SetName(PlayerInfo.Instance.name);//this instance not set on server build(?)
+            //Debug.Log("[SERVER] Name set to :" + PlayerInfo.Instance.name);
 
             float currentHealth = data.GetStat(PlayerData.PlayerStatType.CurrentHealth);
             float maxHealth = data.GetStat(PlayerData.PlayerStatType.MaxHealth);
@@ -215,6 +248,15 @@ public class PlayerDataManager : NetworkBehaviour
                     TargetClientIds = new[] { rpcParams.Receive.SenderClientId }
                 }
             });
+
+            //BroadcastPlayerNameClientRpc(playerId, userName, new ClientRpcParams
+            //{
+            //    Send = new ClientRpcSendParams
+            //    {
+            //        TargetClientIds = new[] { rpcParams.Receive.SenderClientId }
+            //    }
+            //});
+
         }
     }
 
@@ -229,5 +271,12 @@ public class PlayerDataManager : NetworkBehaviour
     {
         OnAnyShieldChanged?.Invoke(playerId, current, max);
     }
+
+    [ClientRpc]
+    public void BroadcastPlayerNameClientRpc(ulong playerId, string playerName, ClientRpcParams rpcParams = default)
+    {
+        OnAnyNameChanged?.Invoke(playerId, playerName);
+    }
+
 
 }

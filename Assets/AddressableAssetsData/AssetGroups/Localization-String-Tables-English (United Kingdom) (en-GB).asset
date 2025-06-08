@@ -15,10 +15,10 @@ MonoBehaviour:
   m_GroupName: Localization-String-Tables-English (United Kingdom) (en-GB)
   m_Data:
     m_SerializedData: []
-  m_GUID: 320981cec59187e439589d020b3654db
+  m_GUID: d47b7c52ed8344499a5dd8af154feb75
   m_SerializeEntries:
-  - m_GUID: 895f4110e15eb4656abac392a963270c
-    m_Address: LocalizationTextTable_en-GB
+  - m_GUID: ee24278dc7eda4d189e3d5db5b7908c8
+    m_Address: UITextTable_en-GB
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale-en-GB
@@ -27,5 +27,5 @@ MonoBehaviour:
   m_Settings: {fileID: 11400000, guid: 53dfc82e7628c4b67884b6a89307b102, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: b3e0188067d3eec46bd25e46599e97e6, type: 2}
-    - {fileID: 11400000, guid: e58b2cd883a410847a7e775d63012682, type: 2}
+    - {fileID: 11400000, guid: 6b0bb77413a574812bf1b955b36e9b11, type: 2}
+    - {fileID: 11400000, guid: 8ecf6b2ae96f94bb9922018101590f14, type: 2}
