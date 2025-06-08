@@ -86,6 +86,10 @@ MonoBehaviour:
     m_Localized: "Oyuncu Aran\u0131yor"
     m_Metadata:
       m_Items: []
+  - m_Id: 648401493417984
+    m_Localized: "Giri\u015F bilgileriniz yanl\u0131\u015F"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

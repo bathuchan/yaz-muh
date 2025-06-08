@@ -91,7 +91,7 @@ public class GeneralServerComm : MonoBehaviour, INetEventListener
             Instance = this;
             client = new NetManager(this);
             client.Start();
-            client.Connect("100.125.153.75", 9060, "SampleApp");
+            client.Connect("100.87.76.125", 9060, "SampleApp");
 
             client.Start(9050);
             Debug.Log("LiteNetLib NetManager started.");

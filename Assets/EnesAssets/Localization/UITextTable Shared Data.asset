@@ -83,6 +83,10 @@ MonoBehaviour:
     m_Key: Looking for Players
     m_Metadata:
       m_Items: []
+  - m_Id: 648401493417984
+    m_Key: wrong login
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
