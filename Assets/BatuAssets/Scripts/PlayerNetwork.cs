@@ -56,10 +56,14 @@ public class PlayerNetwork : NetworkBehaviour
         playerControls.Enable();
 
         // Sync all player health/shield info when a new client joins
-        if (IsClient||IsHost)
+        if (IsClient || IsHost)
         {
+            RegisterPlayerNameServerRpc(PlayerInfo.Instance.username,default);
             PlayerDataManager.Instance?.RequestFullPlayerDataSyncServerRpc();
+            
         }
+
+       
     }
 
 
@@ -129,12 +133,12 @@ public class PlayerNetwork : NetworkBehaviour
             Material mat = PlayerColorManager.Instance.GetMaterial(index);
             Material[] currentMaterials = modelRenderer[0].materials;
             currentMaterials[1] = mat;
-            modelRenderer[0].materials=currentMaterials;
+            modelRenderer[0].materials = currentMaterials;
             currentMaterials = modelRenderer[1].materials;
             currentMaterials[0] = mat;
-            modelRenderer[1].materials=currentMaterials;
+            modelRenderer[1].materials = currentMaterials;
 
-            gameObject.name = PlayerColorManager.Instance.GetName(index)+" Wizard";
+            gameObject.name = PlayerColorManager.Instance.GetName(index) + " Wizard";
         }
     }
 
@@ -195,6 +199,23 @@ public class PlayerNetwork : NetworkBehaviour
         return isNegative ? -floatValue : floatValue;
     }
 
+  
+    [ServerRpc(RequireOwnership = false)]
+    public void RegisterPlayerNameServerRpc(string userName, ServerRpcParams rpcParams = default)
+    {
+        ulong senderId = rpcParams.Receive.SenderClientId;
+
+        Debug.Log($"[SERVER] Registering player name '{userName}' for client {senderId}");
+
+        // Create base data with the provided username
+        var playerData = new PlayerData(senderId, userName);
+        PlayerDataManager.Instance.playerDataDict[senderId] = playerData;
+        PlayerDataManager.Instance.syncedPlayerData.Value.dict[senderId] = playerData;
+        PlayerDataManager.Instance.syncedPlayerData.SetDirty(true);
+
+        // Optional: Notify clients of the name change
+        PlayerDataManager.Instance.BroadcastPlayerNameClientRpc(senderId, userName);
+    }
 
 
 }

@@ -1,4 +1,5 @@
 
+using TMPro;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine;
@@ -6,6 +7,8 @@ using UnityEngine.UI;
 
 public class NetworkManagerUI : MonoBehaviour
 {
+    [SerializeField] private TextMeshProUGUI buildTypeText;
+
     [SerializeField] private Button serverBtn;
     [SerializeField] private Button hostBtn;
     [SerializeField] private Button clientBtn;
@@ -14,6 +17,7 @@ public class NetworkManagerUI : MonoBehaviour
 
     [SerializeField] private string ipAdress="127.0.0.1";
     [SerializeField] private string portAdress="7777";
+    
 
     [SerializeField] private BuildType currentBuildType;
     [SerializeField] private GameObject uiButtonsParent;
@@ -22,7 +26,7 @@ public class NetworkManagerUI : MonoBehaviour
         Server,
         Host, 
         Client,
-        Null
+        Testing
     }
 
     UnityTransport unityTransport;
@@ -35,18 +39,24 @@ public class NetworkManagerUI : MonoBehaviour
         {
             ApplyConnectionSettings(unityTransport);
             NetworkManager.Singleton.StartServer();
+            SetBuildTypeText(BuildType.Server);
+
         });
 
         hostBtn.onClick.AddListener(() =>
         {
             ApplyConnectionSettings(unityTransport);
             NetworkManager.Singleton.StartHost();
+            SetBuildTypeText(BuildType.Host);
+
         });
 
         clientBtn.onClick.AddListener(() =>
         {
             ApplyConnectionSettings(unityTransport);
             NetworkManager.Singleton.StartClient();
+            SetBuildTypeText(BuildType.Client);
+
         });
     }
 
@@ -59,7 +69,7 @@ public class NetworkManagerUI : MonoBehaviour
                 ApplyConnectionSettings(unityTransport);
                 NetworkManager.Singleton.StartClient();
                 uiButtonsParent.SetActive(false);
-
+                buildTypeText.text = BuildType.Client.ToString();
 
 
                 break;
@@ -68,6 +78,7 @@ public class NetworkManagerUI : MonoBehaviour
                 ApplyConnectionSettings(unityTransport);
                 NetworkManager.Singleton.StartServer();
                 uiButtonsParent.SetActive(false);
+                
 
                 break;
 
@@ -75,17 +86,24 @@ public class NetworkManagerUI : MonoBehaviour
                 ApplyConnectionSettings(unityTransport);
                 NetworkManager.Singleton.StartHost();
                 uiButtonsParent.SetActive(false);
+                buildTypeText.text = BuildType.Host.ToString();
 
                 break;
             default:
-                Debug.LogWarning("Build type not declared!");
+                //Debug.LogWarning("Build type not declared!");
+                currentBuildType= BuildType.Testing;
                 uiButtonsParent.SetActive(true);
 
                 break;
         }
-
+        SetBuildTypeText(currentBuildType);
     }
 
+    private void SetBuildTypeText(BuildType buildType) 
+    {
+        buildTypeText.text = buildType.ToString();
+
+    }
     private void ApplyConnectionSettings(UnityTransport transport)
     {
         string ip = ipAdress;
